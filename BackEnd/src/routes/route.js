@@ -1,0 +1,11 @@
+import express, { Router } from 'express';
+
+const router = express.Router();
+
+router.get("/", getAllData);
+router.get("/:id", getDataById);
+router.post("/", createData);
+router.put("/:id", updateData);
+router.delete("/:id", deleteData);
+
+export default router;
