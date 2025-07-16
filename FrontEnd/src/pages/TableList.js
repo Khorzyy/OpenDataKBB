@@ -26,11 +26,14 @@ const TableList = () => {
         <div className="container">
             <h1>Admin Panel</h1>
             <p><strong>Total Tabel:</strong> {tables.length}</p>
-            <Link className="btn-primary" to="/create">+ Buat Tabel Baru</Link>
+            <div className="action-buttons">
+                <Link className="btn-primary" to="/create">+ Buat Tabel Manual</Link>
+                <Link className="btn-secondary" to="/upload-excel">⬆️ Upload Excel + Buat Tabel</Link>
+            </div>
 
             <ul className="table-list">
                 {tables.map(t => (
-                    <li key={t._id}>
+                    <li key={t._id} className="table-item">
                         <b>{t.name}</b><br />
                         <Link to={`/form/${t._id}`}>📝 Isi Data</Link> |
                         <Link to={`/data/${t._id}`}>📄 Lihat Data</Link> |

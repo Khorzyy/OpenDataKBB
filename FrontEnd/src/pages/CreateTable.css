@@ -1,68 +1,65 @@
 .create-container {
-    max-width: 600px;
-    margin: 50px auto;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .form-title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 25px;
-}
-
-.create-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
 }
 
 .input-field {
-    padding: 10px 14px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    transition: border-color 0.3s;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
 }
 
-.input-field:focus {
-    outline: none;
-    border-color: #0984e3;
+.input-file {
+  margin-bottom: 20px;
 }
 
 .field-label {
-    margin-top: 15px;
-    font-size: 18px;
-    font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-.btn-primary,
+.upload-label {
+  margin-top: 10px;
+  display: block;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.btn-secondary,
+.btn-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
 .btn-secondary {
-    padding: 10px 14px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
+  background-color: #dfe6e9;
+  margin-right: 10px;
 }
 
 .btn-primary {
-    background-color: #0984e3;
-    color: white;
+  background-color: #0984e3;
+  color: white;
 }
 
 .btn-primary:hover {
-    background-color: #74b9ff;
-}
-
-.btn-secondary {
-    background-color: #dfe6e9;
-    color: #2d3436;
-}
-
-.btn-secondary:hover {
-    background-color: #b2bec3;
+  background-color: #74b9ff;
 }

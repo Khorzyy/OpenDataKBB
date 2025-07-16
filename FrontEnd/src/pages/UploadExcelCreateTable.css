@@ -1,0 +1,11 @@
+.upload-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.upload-container input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
