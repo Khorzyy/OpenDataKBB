@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import API from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import './CreateTable.css';
 
 const CreateTable = () => {
@@ -15,10 +16,31 @@ const CreateTable = () => {
     };
 
     const addField = () => setFields([...fields, '']);
+
     const updateField = (i, val) => {
-        const newFields = [...fields];
-        newFields[i] = val;
-        setFields(newFields);
+        const updated = [...fields];
+        updated[i] = val;
+        setFields(updated);
+    };
+
+    const handleFileUpload = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (evt) => {
+            const data = evt.target.result;
+            const workbook = XLSX.read(data, { type: 'binary' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (json.length > 0) {
+                const headers = json[0];
+                setFields(headers.map(h => h.toString()));
+            }
+        };
+
+        reader.readAsBinaryString(file);
     };
 
     return (
@@ -31,6 +53,16 @@ const CreateTable = () => {
                     value={name}
                     onChange={e => setName(e.target.value)}
                     required
+                />
+
+                <label className="upload-label">
+                    Atau Upload Excel (untuk otomatis isi field):
+                </label>
+                <input
+                    type="file"
+                    accept=".xlsx, .xls"
+                    onChange={handleFileUpload}
+                    className="input-file"
                 />
 
                 <h4 className="field-label">Fields:</h4>
