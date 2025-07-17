@@ -9,8 +9,8 @@ import {
   Badge,
   Form,
 } from 'react-bootstrap';
+import { getAllFiles } from '../api/api';
 
-import { fetchData } from '../api/api';
 import DataCard from '../components/DataCard';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -20,38 +20,44 @@ import { FaDatabase, FaFilter, FaListOl } from 'react-icons/fa';
 import '../styles/Home.css';
 
 // 🔍 Komponen Pencarian
+// ... [imports tetap sama]
+
 function Search({ searchTerm, setSearchTerm }) {
   return (
-    <Form className="d-flex mb-4 justify-content-center" onSubmit={(e) => e.preventDefault()}>
+    <Form
+      className="d-flex mb-5 justify-content-center"
+      onSubmit={(e) => e.preventDefault()}
+    >
       <Form.Control
         type="search"
-        placeholder="Cari data..."
-        className="me-2"
+        placeholder="🔍 Cari data statistik..."
+        className="me-2 shadow-sm rounded-pill px-4"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Button variant="primary">Cari</Button>
+      <Button variant="success" className="rounded-pill px-4 shadow-sm">
+        Cari
+      </Button>
     </Form>
   );
 }
 
-// 📄 Komponen Utama Home
 function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-
   const itemsPerPage = 6;
 
   useEffect(() => {
-      fetchData().then((res) => {
-          setData(res);
-          setLoading(false);
-          AOS.init({ duration: 800, once: true }); 
-    });
-    setCurrentPage(1);
-  }, [searchTerm]);
+  getAllFiles().then((res) => {
+    setData(res);
+    setLoading(false);
+    AOS.init({ duration: 800, once: true });
+  });
+  setCurrentPage(1);
+}, [searchTerm]);
+
 
   const filteredData = data.filter((item) =>
     item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -63,28 +69,16 @@ function Home() {
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
   return (
     <>
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      <main className="home-main">
+      <main className="home-main bg-light py-5">
         <Container>
-
-          {/* 🖼 Hero Section */}
-          <div className="hero-section">
-            <div className="hero-overlay text-center">
-              <h1 className="display-5 fw-bold text-light">Open Data Kabupaten Bandung Barat</h1>
-              <p className="text-light">Temukan data statistik publik terbaru dari berbagai sektor.</p>
-              <hr className="hero-divider" />
-            </div>
+          {/* 🖼 Hero */}
+          <div className="hero-section mb-5 p-5 text-white text-center rounded shadow" style={{ background: '#28a745' }}>
+            <h1 className="display-5 fw-bold mb-2">Open Data Kabupaten Bandung Barat</h1>
+            <p className="mb-0">Temukan data publik terkini dari berbagai sektor pemerintahan.</p>
           </div>
 
           {/* 🔍 Search */}
@@ -94,16 +88,22 @@ function Home() {
           {!loading && (
             <Row className="mb-4 text-center">
               <Col md={4}>
-                <FaDatabase size={24} className="text-success mb-2" />
-                <p><strong>Total Data:</strong> <Badge bg="success">{data.length}</Badge></p>
+                <div className="bg-white shadow-sm rounded p-3">
+                  <FaDatabase size={24} className="text-success mb-2" />
+                  <p><strong>Total Data:</strong> <Badge bg="success">{data.length}</Badge></p>
+                </div>
               </Col>
               <Col md={4}>
-                <FaFilter size={24} className="text-primary mb-2" />
-                <p><strong>Hasil Pencarian:</strong> <Badge bg="primary">{filteredData.length}</Badge></p>
+                <div className="bg-white shadow-sm rounded p-3">
+                  <FaFilter size={24} className="text-primary mb-2" />
+                  <p><strong>Hasil Pencarian:</strong> <Badge bg="primary">{filteredData.length}</Badge></p>
+                </div>
               </Col>
               <Col md={4}>
-                <FaListOl size={24} className="text-secondary mb-2" />
-                <p><strong>Halaman:</strong> {currentPage} / {totalPages}</p>
+                <div className="bg-white shadow-sm rounded p-3">
+                  <FaListOl size={24} className="text-secondary mb-2" />
+                  <p><strong>Halaman:</strong> {currentPage} / {totalPages}</p>
+                </div>
               </Col>
             </Row>
           )}
@@ -141,22 +141,22 @@ function Home() {
           {/* 🔁 Pagination */}
           {!loading && filteredData.length > itemsPerPage && (
             <Row className="mt-4">
-              <Col className="d-flex justify-content-between align-items-center">
+              <Col className="d-flex justify-content-center align-items-center gap-3">
                 <Button
-  className="pagination-buttons"
-  variant="outline-secondary"
-  onClick={handlePrev}
-  disabled={currentPage === 1}
->
-  ← Sebelumnya
-</Button>
-
-                <span className="text-muted">
-                  Halaman {currentPage} dari {totalPages}
-                </span>
-                <Button
+                  className="rounded-pill px-4"
                   variant="outline-secondary"
-                  onClick={handleNext}
+                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  ← Sebelumnya
+                </Button>
+
+                <span className="text-muted">Halaman {currentPage} dari {totalPages}</span>
+
+                <Button
+                  className="rounded-pill px-4"
+                  variant="outline-secondary"
+                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
                   Berikutnya →
