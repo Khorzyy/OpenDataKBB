@@ -1,83 +1,83 @@
 .container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
 }
 
 h1 {
-  font-size: 28px;
-  margin-bottom: 15px;
-  text-align: center;
+    font-size: 28px;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
 p {
-  text-align: center;
-  margin-bottom: 25px;
-  font-size: 16px;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 16px;
 }
 
 .btn-primary {
-  background-color: #0984e3;
-  color: white;
-  padding: 10px 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin-bottom: 20px;
-  transition: background-color 0.3s ease;
+    background-color: #0984e3;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
-  background-color: #74b9ff;
+    background-color: #74b9ff;
 }
 
 .table-list {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 .table-list li {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
 }
 
 .table-list li b {
-  font-size: 18px;
-  display: block;
-  margin-bottom: 8px;
+    font-size: 18px;
+    display: block;
+    margin-bottom: 8px;
 }
 
 .table-list li a {
-  margin-right: 10px;
-  color: #0984e3;
-  text-decoration: none;
-  font-size: 14px;
+    margin-right: 10px;
+    color: #0984e3;
+    text-decoration: none;
+    font-size: 14px;
 }
 
 .table-list li a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .btn-delete {
-  background-color: #d63031;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+    background-color: #d63031;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
 .btn-delete:hover {
-  background-color: #e17055;
+    background-color: #e17055;
 }
