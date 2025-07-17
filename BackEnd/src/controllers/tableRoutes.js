@@ -32,4 +32,11 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  const table = await Table.findById(req.params.id);
+  if (!table) return res.status(404).json({ error: 'Tabel tidak ditemukan' });
+  res.json(table);
+});
+
+
 export default router;
