@@ -5,4 +5,4 @@ const tableSchema = new mongoose.Schema({
     fields: [{ type: String }]
 });
 
-export default mongoose.model('Data', tableSchema);
+export default mongoose.model('Table', tableSchema);

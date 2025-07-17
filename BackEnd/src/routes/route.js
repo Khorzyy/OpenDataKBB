@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { getAllData, getDataById, createData, updateData, deleteData } from '../controllers/'
 
 const router = express.Router();
 

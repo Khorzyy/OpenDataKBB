@@ -1,6 +1,6 @@
 import express from 'express';
 import Table from '../models/Table.js';
-import TableData from '../models/TableData.js'; // ✅ ini yang tadi error karena belum ada
+import TableData from '../models/TableData.js';
 
 const router = express.Router();
 
