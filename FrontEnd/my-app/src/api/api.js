@@ -9,3 +9,8 @@ export const getFileById = async (id) => {
   const files = await getAllFiles();
   return files.find((item) => item.id === parseInt(id));
 };
+
+// Untuk JSON Server atau backend API nyata:
+export const deleteFile = async (id) => {
+  await axios.delete(`http://localhost:3001/files/${id}`);
+};
