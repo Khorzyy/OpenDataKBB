@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-const API = axios.create({
-  baseURL: 'http://localhost:5000/api'
-});
-
-export default API;
+export const fetchData = async () => {
+  try {
+    const response = await axios.get('/files.json');
+    return response.data;
+  } catch (error) {
+    console.error('Gagal mengambil data:', error);
+    return [];
+  }
+};
