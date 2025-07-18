@@ -59,6 +59,8 @@ function AdminDashboard() {
     }
   };
 
+  // Table-responsive
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -72,7 +74,10 @@ function AdminDashboard() {
   }, [searchTerm, data]);
 
   const handleAddData = () => navigate('/admin/tambah');
-  const handleEdit = (id) => alert(`Edit data ID: ${id}`);
+  const handleEdit = (id) => {
+  navigate(`/admin/EditFile/${id}`);
+};
+
   const handleDelete = (id) => {
     if (window.confirm('Yakin ingin menghapus data ini?')) {
       console.log('Deleted ID:', id);
@@ -158,12 +163,6 @@ function AdminDashboard() {
             </h2>
             <small className="text-muted">Kelola data aplikasi secara efisien dan cepat</small>
           </Col>
-          <Col md="auto">
-            <Button variant="outline-primary" className="rounded-pill px-4" onClick={handleAddData}>
-              <FaPlusCircle className="me-2" />
-              Tambah Data
-            </Button>
-          </Col>
         </Row>
 
         {/* Search */}
@@ -236,7 +235,7 @@ function AdminDashboard() {
               <Table bordered hover responsive className="align-middle mb-0 bg-white table-striped">
                 <thead className="table-light">
                   <tr>
-                    <th className="text-center">#</th>
+                    <th className="text-center">ID</th>
                     <th>Nama</th>
                     <th>Tahun</th>
                     <th>Deskripsi</th>
@@ -249,7 +248,8 @@ function AdminDashboard() {
                   {currentItems.map((item, idx) => (
                     <tr key={item.id}>
                       <td className="text-center text-muted">
-                        {(currentPage - 1) * itemsPerPage + idx + 1}
+                        <td className="text-center text-muted">{item.id}</td>
+
                       </td>
                       <td>
                         <FaFileExcel className="me-2 text-success" />
