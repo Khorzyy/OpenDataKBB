@@ -58,7 +58,7 @@ router.delete('/:tableId/:id' , async (req, res) => {
   try{
     const deleted = await TableData.findByIdAndDelete(req.params.id);
     if(!deleted){
-      return res.status(404).jsonn({ error: `Data tidak ditemukan `});
+      return res.status(404).json({ error: `Data tidak ditemukan `});
     }
 
     res.status(200).json({ message: 'data terkait berhasil dihapus.' });
@@ -71,7 +71,7 @@ router.delete('/:tableId/:id' , async (req, res) => {
 // mengambil data yang specifik
 router.get('/:tableId/:id', async (req, res) => {
   try {
-    const entries = await TableData.findById({ tableId: req.params.tableId, _id: req.params.id });
+    const entries = await TableData.findOne({ tableId: req.params.tableId, _id: req.params.id });
     res.json(entries);
   } catch (err) {
     console.error('Gagal mengambil data:', err);
