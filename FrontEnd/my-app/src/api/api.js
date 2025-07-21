@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// BASE URL - ubah sesuai kebutuhan (localhost, production, dll)
-const BASE_URL = 'http://localhost:3000/data/files.json';
+// Ganti dengan IPv4 address aktual, misalnya: http://192.168.1.42:5000
+const BASE_URL = 'http://10.42.1.73:5000/public/data/files.json';
 
 /**
- * Ambil semua file dari backend.
+ * Ambil semua file dari backend (file statis JSON).
  */
 export const getAllFiles = async () => {
   try {
@@ -16,44 +16,9 @@ export const getAllFiles = async () => {
   }
 };
 
-/**
- * Ambil satu file berdasarkan ID.
- * @param {number|string} id 
- */
-export const getFileById = async (id) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Gagal mengambil file ID ${id}:`, error);
-    throw error;
-  }
-};
+export async function getFileById(id) {
+  const all = await getAllFiles();
+  return all.find((item) => item.id === id);
+}
 
-/**
- * Hapus file berdasarkan ID.
- * @param {number|string} id 
- */
-export const deleteFile = async (id) => {
-  try {
-    await axios.delete(`${BASE_URL}/${id}`);
-  } catch (error) {
-    console.error(`Gagal menghapus file ID ${id}:`, error);
-    throw error;
-  }
-};
 
-/**
- * Perbarui file berdasarkan ID.
- * @param {number|string} id 
- * @param {object} data 
- */
-export const updateFile = async (id, data) => {
-  try {
-    const response = await axios.put(`${BASE_URL}/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.error(`Gagal memperbarui file ID ${id}:`, error);
-    throw error;
-  }
-};
