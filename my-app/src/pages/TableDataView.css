@@ -1,0 +1,7 @@
+.floating-back-btn {
+  position: fixed;
+  top: 80px; /* sesuaikan jika ada navbar */
+  left: 20px;
+  z-index: 1050;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "id": 1,
+    "nama": "Data Penduduk KBB",
+    "deskripsi": "Rekap jumlah penduduk Kabupaten Bandung Barat tahun 2025.",
+    "url": "/data/files/Data_Penduduk_KBB_2025.xlsx",
+    "kategori": "Kependudukan",
+    "tahun": 2025,
+    "sumber": "Dinas Kependudukan",
+    "format": "Excel (.xlsx)",
+    "ukuran": "420 KB"
+  },
+  {
+    "id": 2,
+    "nama": "Data Dummy",
+    "deskripsi": "lorem ipsum dolor sit amer",
+    "url": "/data/files/statistika_dummy.xlsx",
+    "kategori": "Pendidikan",
+    "tahun": 2024,
+    "sumber": "Dinas Pendidikan",
+    "format": "Excel (.xlsx)",
+    "ukuran": "310 KB"
+  },
+  {
+    "id": 3,
+    "nama": "Data Dummy 2",
+    "deskripsi": "lorem ipsum dolor sit amer",
+    "url": "/data/files/dummy.xlsx",
+    "kategori": "Kesehatan",
+    "tahun": 2024,
+    "sumber": "Dummy",
+    "format": "Excel (.xlsx)",
+    "ukuran": "500 KB"
+  },
+  {
+    "id": 4,
+    "nama": "Data Pertanian",
+    "deskripsi": "Luas lahan pertanian dan jenis tanaman utama.",
+    "url": "https://example.com/data-pertanian.xlsx",
+    "kategori": "Pertanian",
+    "tahun": 2023,
+    "sumber": "Dinas Pertanian",
+    "format": "Excel (.xlsx)",
+    "ukuran": "390 KB"
+  },
+  {
+    "id": 5,
+    "nama": "Data UMKM",
+    "deskripsi": "Daftar UMKM aktif di setiap kecamatan.",
+    "url": "https://example.com/data-umkm.xlsx",
+    "kategori": "Ekonomi",
+    "tahun": 2025,
+    "sumber": "Dinas Koperasi & UMKM",
+    "format": "Excel (.xlsx)",
+    "ukuran": "350 KB"
+  },
+  {
+    "id": 6,
+    "nama": "Data Pariwisata",
+    "deskripsi": "Jumlah kunjungan ke tempat wisata lokal.",
+    "url": "https://example.com/data-pariwisata.xlsx",
+    "kategori": "Pariwisata",
+    "tahun": 2024,
+    "sumber": "Dinas Pariwisata",
+    "format": "Excel (.xlsx)",
+    "ukuran": "280 KB"
+  },
+  {
+    "id": 7,
+    "nama": "Data Transportasi",
+    "deskripsi": "Data jumlah kendaraan dan rute angkutan umum.",
+    "url": "https://example.com/data-transportasi.xlsx",
+    "kategori": "Transportasi",
+    "tahun": 2024,
+    "sumber": "Dinas Perhubungan",
+    "format": "Excel (.xlsx)",
+    "ukuran": "460 KB"
+  },
+  {
+    "id": 8,
+    "nama": "Data Pengangguran",
+    "deskripsi": "Tingkat pengangguran per tahun dan kecamatan.",
+    "url": "https://example.com/data-pengangguran.xlsx",
+    "kategori": "Ketenagakerjaan",
+    "tahun": 2025,
+    "sumber": "BPS KBB",
+    "format": "Excel (.xlsx)",
+    "ukuran": "270 KB"
+  },
+  {
+    "id": 9,
+    "nama": "Data Koperasi",
+    "deskripsi": "Jumlah koperasi aktif dan jenis usahanya.",
+    "url": "https://example.com/data-koperasi.xlsx",
+    "kategori": "Ekonomi",
+    "tahun": 2025,
+    "sumber": "Dinas Koperasi",
+    "format": "Excel (.xlsx)",
+    "ukuran": "330 KB"
+  },
+  {
+    "id": 10,
+    "nama": "Data Penduduk KBB",
+    "deskripsi": "Rekap jumlah penduduk Kabupaten Bandung Barat tahun 2025.",
+    "url": "/files/Data_Penduduk_KBB_2025.xlsx",
+    "kategori": "Kependudukan",
+    "tahun": 2025,
+    "sumber": "Dinas Kependudukan",
+    "format": "Excel (.xlsx)",
+    "ukuran": "420 KB"
+  },
+  {
+    "id": 11,
+    "nama": "Data Pendidikan",
+    "deskripsi": "Rasio guru dan murid per sekolah.",
+    "url": "https://example.com/data-pendidikan.xlsx",
+    "kategori": "Pendidikan",
+    "tahun": 2024,
+    "sumber": "Dinas Pendidikan",
+    "format": "Excel (.xlsx)",
+    "ukuran": "340 KB"
+  },
+  {
+    "id": 12,
+    "nama": "Data Kriminalitas",
+    "deskripsi": "Statistik tindak kejahatan per kecamatan.",
+    "url": "https://example.com/data-kriminal.xlsx",
+    "kategori": "Keamanan",
+    "tahun": 2023,
+    "sumber": "Polres KBB",
+    "format": "Excel (.xlsx)",
+    "ukuran": "310 KB"
+  },
+  {
+    "id": 13,
+    "nama": "Data Sampah",
+    "deskripsi": "Volume sampah dan metode pengelolaannya.",
+    "url": "https://example.com/data-sampah.xlsx",
+    "kategori": "Lingkungan",
+    "tahun": 2024,
+    "sumber": "DLH KBB",
+    "format": "Excel (.xlsx)",
+    "ukuran": "290 KB"
+  },
+  {
+    "id": 14,
+    "nama": "Data Bantuan Sosial",
+    "deskripsi": "Distribusi bantuan sosial selama tahun berjalan.",
+    "url": "https://example.com/data-bansos.xlsx",
+    "kategori": "Sosial",
+    "tahun": 2025,
+    "sumber": "Dinas Sosial",
+    "format": "Excel (.xlsx)",
+    "ukuran": "310 KB"
+  },
+  {
+    "id": 15,
+    "nama": "Data Infrastruktur",
+    "deskripsi": "Jumlah jalan, jembatan, dan fasilitas publik lainnya.",
+    "url": "https://example.com/data-infrastruktur.xlsx",
+    "kategori": "Infrastruktur",
+    "tahun": 2023,
+    "sumber": "Dinas PU",
+    "format": "Excel (.xlsx)",
+    "ukuran": "370 KB"
+  }
+]
