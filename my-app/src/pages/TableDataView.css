@@ -5,3 +5,16 @@
   z-index: 1050;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+/* TableDataView.css */
+.card-title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bg-light-subtle {
+  background-color: #f8f9fc;
+}
+
+.border-start {
+  border-left-width: 0.3rem !important;
+}

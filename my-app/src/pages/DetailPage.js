@@ -9,7 +9,7 @@ import {
   Alert,
   Spinner,
 } from 'react-bootstrap';
-import './TableDataView.css'; // untuk styling tombol mengambang
+import './TableDataView.css';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -18,6 +18,8 @@ const DetailPage = () => {
   const [tableData, setTableData] = useState([]);
   const [tableInfo, setTableInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,9 +46,7 @@ const DetailPage = () => {
         `http://localhost:5000/api/tables/${id}/download`
       );
 
-      if (!response.ok) {
-        throw new Error('Gagal mengunduh file');
-      }
+      if (!response.ok) throw new Error('Gagal mengunduh file');
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -69,9 +69,40 @@ const DetailPage = () => {
     navigate('/');
   };
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(tableData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Membuat pagination dinamis dengan ...
+  const getPageNumbers = () => {
+    const maxVisiblePages = 5;
+    const pageNumbers = [];
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+    } else {
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
+
+      pageNumbers.push(1);
+
+      if (startPage > 2) pageNumbers.push('...');
+      for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
+      if (endPage < totalPages - 1) pageNumbers.push('...');
+
+      pageNumbers.push(totalPages);
+    }
+
+    return pageNumbers;
+  };
+
   return (
     <Container className="mt-4">
-      {/* Tombol Kembali mengambang */}
       <Button
         variant="secondary"
         onClick={handleBack}
@@ -80,13 +111,32 @@ const DetailPage = () => {
         ← Kembali
       </Button>
 
-      <Card className="mb-3 shadow">
+      <Card className="mb-3 shadow-sm border-start border-4 border-primary bg-light-subtle">
         <Card.Body>
-          <Card.Title className="h4">
-            {tableInfo.name || 'Nama Tabel Tidak Ditemukan'}
+          <Card.Title className="h4 mb-3 text-primary fw-semibold">
+            📊 {tableInfo.name || 'Nama Tabel Tidak Ditemukan'}
           </Card.Title>
+
+          <div className="row text-muted small">
+            {tableInfo.tahun && (
+              <div className="col-md-4 mb-2">
+                <strong>📅 Tahun:</strong> {tableInfo.tahun}
+              </div>
+            )}
+            {tableInfo.kategori && (
+              <div className="col-md-4 mb-2">
+                <strong>🏷️ Kategori:</strong> {tableInfo.kategori}
+              </div>
+            )}
+            {tableInfo.sumber && (
+              <div className="col-md-4 mb-2">
+                <strong>📚 Sumber:</strong> {tableInfo.sumber}
+              </div>
+            )}
+          </div>
         </Card.Body>
       </Card>
+
 
       <div className="mb-3">
         <h5>Deskripsi:</h5>
@@ -107,24 +157,71 @@ const DetailPage = () => {
       ) : tableData.length === 0 ? (
         <Alert variant="warning">Tidak ada data.</Alert>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              {Object.keys(tableData[0].data).map((key, index) => (
-                <th key={index}>{key}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {tableData.map((item, i) => (
-              <tr key={i}>
-                {Object.values(item.data).map((val, j) => (
-                  <td key={j}>{val}</td>
+        <>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                {Object.keys(tableData[0].data).map((key, index) => (
+                  <th key={index}>{key}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {currentItems.map((item, i) => (
+                <tr key={i}>
+                  {Object.values(item.data).map((val, j) => (
+                    <td key={j}>{val}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center mt-3">
+              <nav>
+                <ul className="pagination">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(1)}>
+                      «
+                    </button>
+                  </li>
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+                      &lt;
+                    </button>
+                  </li>
+
+                  {getPageNumbers().map((num, i) => (
+                    <li
+                      key={i}
+                      className={`page-item ${currentPage === num ? 'active' : ''} ${num === '...' ? 'disabled' : ''}`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => typeof num === 'number' && handlePageChange(num)}
+                      >
+                        {num}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+                      &gt;
+                    </button>
+                  </li>
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(totalPages)}>
+                      »
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          )}
+        </>
       )}
     </Container>
   );

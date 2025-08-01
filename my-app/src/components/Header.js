@@ -14,9 +14,6 @@ function Header({ searchTerm, setSearchTerm }) {
         </div>
 
         <Nav className="gap-4 nav-links">
-          <Nav.Item><Nav.Link href="#">Home</Nav.Link></Nav.Item>
-          <Nav.Item><Nav.Link href="#">Profil</Nav.Link></Nav.Item>
-          <Nav.Item><Nav.Link href="#">Tentang</Nav.Link></Nav.Item>
         </Nav>
       </Container>
     </header>
