@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+/* Pastikan root mengambil 100% tinggi viewport */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* App sebagai container fleksibel */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* penting */
+}
+
+/* Konten utama mengisi sisa tinggi */
+.main-content {
+  flex: 1;
+}

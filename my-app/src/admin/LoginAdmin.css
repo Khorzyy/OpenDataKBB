@@ -1,0 +1,31 @@
+/* LoginAdmin.css */
+.login-page {
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.login-card {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.login-title {
+  font-weight: 700;
+  color: #2a5298;
+}
+
+.form-label {
+  font-weight: 500;
+}
