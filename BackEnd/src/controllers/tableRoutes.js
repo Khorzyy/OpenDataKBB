@@ -13,6 +13,23 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Ambil semua metadata file
+/**
+ * @swagger
+ * tags:
+ *   name: Table
+ *   description: Operasi terkait metadata tabel
+ */
+
+/**
+ * @swagger
+ * /api/tables:
+ *   get:
+ *     summary: Ambil semua metadata tabel
+ *     tags: [Table]
+ *     responses:
+ *       200:
+ *         description: Daftar semua metadata tabel
+ */
 router.get('/', async (req, res) => {
   try {
     const tables = await Table.find().sort({ createdAt: -1 });
@@ -23,6 +40,25 @@ router.get('/', async (req, res) => {
 });
 
 // Ambil metadata berdasarkan ID
+/**
+ * @swagger
+ * /api/tables/{id}:
+ *   get:
+ *     summary: Ambil metadata tabel berdasarkan ID
+ *     tags: [Table]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID metadata tabel
+ *     responses:
+ *       200:
+ *         description: Metadata ditemukan
+ *       404:
+ *         description: Metadata tidak ditemukan
+ */
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -37,6 +73,26 @@ router.get('/:id', async (req, res) => {
 });
 
 // Upload file Excel dan parsing data
+/**
+ * @swagger
+ * /api/tables/upload:
+ *   post:
+ *     summary: Upload file Excel dan parsing data
+ *     tags: [Table]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Data dari file Excel berhasil diparsing
+ */
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
@@ -51,6 +107,43 @@ router.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 // Simpan metadata ke database
+/**
+ * @swagger
+ * /api/tables:
+ *   post:
+ *     summary: Simpan metadata tabel ke database
+ *     tags: [Table]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               kategori:
+ *                 type: string
+ *               tahun:
+ *                 type: number
+ *               sumber:
+ *                 type: string
+ *               format:
+ *                 type: string
+ *               ukuran:
+ *                 type: string
+ *               url:
+ *                 type: string
+ *               fields:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: Metadata berhasil disimpan
+ */
 router.post('/', async (req, res) => {
   const table = new Table(req.body);
   try {
@@ -62,6 +155,44 @@ router.post('/', async (req, res) => {
 });
 
 // Update metadata file
+/**
+ * @swagger
+ * /api/tables/{id}:
+ *   put:
+ *     summary: Update metadata tabel berdasarkan ID
+ *     tags: [Table]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID metadata tabel
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               kategori:
+ *                 type: string
+ *               tahun:
+ *                 type: number
+ *               sumber:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               format:
+ *                 type: string
+ *               ukuran:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Metadata berhasil diperbarui
+ */
 router.put('/:id', async (req, res) => {
   try {
     const updatedTable = await Table.findByIdAndUpdate(
@@ -82,6 +213,23 @@ router.put('/:id', async (req, res) => {
 });
 
 // Hapus tabel
+/**
+ * @swagger
+ * /api/tables/{id}:
+ *   delete:
+ *     summary: Hapus metadata tabel berdasarkan ID
+ *     tags: [Table]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID metadata tabel
+ *     responses:
+ *       200:
+ *         description: Metadata berhasil dihapus
+ */ 
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -107,7 +255,40 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Simpan isi data ke collection `Data`
+// Simpan isi data ke collection Data
+/**
+ * @swagger
+ * /data/{id}:
+ *   post:
+ *     summary: Menyimpan array data ke dalam tabel berdasarkan ID
+ *     tags: [Data]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID tabel target
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               example:
+ *                 nama: "John"
+ *                 umur: 25
+ *                 pekerjaan: "Programmer"
+ *     responses:
+ *       201:
+ *         description: Data berhasil disimpan
+ *       400:
+ *         description: ID tidak valid
+ *       500:
+ *         description: Gagal menyimpan data
+ */
 router.post('/data/:id', async (req, res) => {
   const { id } = req.params;
   const dataArray = req.body;
@@ -127,6 +308,33 @@ router.post('/data/:id', async (req, res) => {
 });
 
 // Ambil isi data berdasarkan ID tabel
+/**
+ * @swagger
+ * /data/{id}:
+ *   get:
+ *     summary: Mengambil semua data berdasarkan ID tabel
+ *     tags: [Data]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID tabel
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Data berhasil diambil
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       400:
+ *         description: ID tidak valid
+ *       500:
+ *         description: Gagal mengambil data
+ */
 router.get('/data/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -142,6 +350,35 @@ router.get('/data/:id', async (req, res) => {
   }
 });
 
+// unduh Data file excel
+/**
+ * @swagger
+ * /{id}/download:
+ *   get:
+ *     summary: Mengunduh data dari tabel sebagai file Excel
+ *     tags: [Data]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID tabel
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Berhasil mengunduh file Excel
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       400:
+ *         description: ID tidak valid
+ *       404:
+ *         description: Tabel atau data tidak ditemukan
+ *       500:
+ *         description: Gagal mengekspor data
+ */
 router.get('/:id/download', async (req, res) => {
   const { id } = req.params;
 

@@ -1,4 +1,3 @@
-// routes/upload.js
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -20,6 +19,70 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+/**
+ * @swagger
+ * /upload:
+ *   post:
+ *     summary: Upload file Excel dan simpan metadata ke database
+ *     tags:
+ *       - Upload
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: File Excel yang akan diunggah
+ *               name:
+ *                 type: string
+ *                 example: Data Penduduk 2024
+ *               description:
+ *                 type: string
+ *                 example: Dataset berisi jumlah penduduk berdasarkan usia dan jenis kelamin
+ *               kategori:
+ *                 type: string
+ *                 example: Kependudukan
+ *               tahun:
+ *                 type: string
+ *                 example: 2024
+ *               sumber:
+ *                 type: string
+ *                 example: BPS Kabupaten Bandung Barat
+ *               format:
+ *                 type: string
+ *                 example: XLSX
+ *               ukuran:
+ *                 type: string
+ *                 example: 150KB
+ *     responses:
+ *       200:
+ *         description: File berhasil diunggah dan metadata disimpan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Berhasil upload file & simpan data.
+ *                 table:
+ *                   $ref: '#/components/schemas/Table'
+ *       500:
+ *         description: Gagal upload file
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Gagal upload file.
+ */
+
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const {
@@ -40,9 +103,9 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       sumber,
       format,
       ukuran,
-      fields: [], // nanti bisa diisi kalau kamu parsing lagi,
+      fields: [], // nanti bisa diisi kalau kamu parsing lagi
       originalFile: req.file.filename,
-      url: `/uploads/${req.file.filename}`, // untuk akses
+      url: `/uploads/${req.file.filename}`,
     });
 
     await table.save();
