@@ -1,0 +1,38 @@
+/* Welcome Card */
+.welcome-card {
+  background: linear-gradient(135deg, #e9f9f1, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.15s ease;
+}
+.welcome-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Tab Styling */
+.custom-tabs .nav-link {
+  border-radius: 20px 20px 0 0 !important;
+  margin: 0 4px;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+.custom-tabs .nav-link.active {
+  background-color: #28a745 !important;
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.custom-tabs .nav-link:hover {
+  background-color: #e8f7ed;
+  color: #28a745;
+}
+
+/* Tab Content Fade */
+.tab-content-wrapper {
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

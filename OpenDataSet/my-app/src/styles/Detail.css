@@ -1,0 +1,97 @@
+.detail-page {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0;
+  color: #fff;
+}
+
+/* Animated background */
+.detail-page .animated-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 20%, transparent 70%);
+  animation: moveBg 10s infinite linear;
+  z-index: 0;
+}
+
+.detail-page .floating-shapes::before,
+.detail-page .floating-shapes::after {
+  content: "";
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: floatShape 8s infinite ease-in-out;
+}
+.detail-page .floating-shapes::before {
+  width: 150px;
+  height: 150px;
+  top: 10%;
+  left: 15%;
+}
+.detail-page .floating-shapes::after {
+  width: 200px;
+  height: 200px;
+  top: 40%;
+  right: 10%;
+  animation-delay: 3s;
+}
+
+/* Animations */
+@keyframes moveBg {
+  from { background-position: 0 0; }
+  to { background-position: 100px 100px; }
+}
+@keyframes floatShape {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Card kaca */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.glass-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  transition: 0.3s ease;
+}
+
+/* Tabel agar serasi */
+.detail-page .table {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+.detail-page .table th {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.detail-page .table td {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.custom-btn-outline {
+  border-color: #fff !important;
+  color: #fff !important;
+}
+.custom-btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+.glass-card {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.detail-page .animated-bg,
+.detail-page .floating-shapes {
+  pointer-events: none;
+}

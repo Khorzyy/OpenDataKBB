@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f6f8fa;
+  color: #2e2e2e;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+p {
+  font-size: 1rem;
+  color: #444;
+}
+
+blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 1rem;
+  color: #555;
+  font-style: italic;
+}
+
+.card, .carousel {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}

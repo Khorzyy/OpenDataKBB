@@ -1,0 +1,94 @@
+/* ================================
+   ALL DATA PAGE (Palette Visi Misi)
+================================== */
+.all-data-page {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  position: relative;
+  color: white;
+  overflow: hidden;
+}
+
+/* Background animasi */
+.animated-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 20%, transparent 70%);
+  animation: moveBg 10s infinite linear;
+  z-index: 0;
+}
+@keyframes moveBg {
+  from { background-position: 0 0; }
+  to { background-position: 100px 100px; }
+}
+
+/* Glass container utama */
+.glass-container {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 1100px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 2;
+}
+
+/* Card Data */
+.data-card {
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(8px);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.data-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+}
+
+/* Pagination */
+.pagination-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  border-radius: 999px;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+.pagination-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* Shape melayang dekoratif */
+.floating-shapes::before,
+.floating-shapes::after {
+  content: "";
+  position: absolute;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  animation: floatShape 8s infinite ease-in-out;
+}
+.floating-shapes::before {
+  width: 150px;
+  height: 150px;
+  left: 10%;
+  top: 15%;
+}
+.floating-shapes::after {
+  width: 200px;
+  height: 200px;
+  right: 10%;
+  top: 20%;
+  animation-delay: 3s;
+}
+@keyframes floatShape {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}

@@ -1,0 +1,25 @@
+.footer ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.footer ul li {
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+}
+
+.footer h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.footer .text-muted {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.footer img {
+  max-height: 60px;
+}
