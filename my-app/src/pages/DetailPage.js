@@ -1,230 +1,213 @@
-import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import API from '../api/api';
-import {
-  Container,
-  Card,
-  Button,
-  Table,
-  Alert,
-  Spinner,
-} from 'react-bootstrap';
-import './TableDataView.css';
+import { useEffect, useState } from 'react';
+import { Container, Card, Button, Spinner, Badge } from 'react-bootstrap';
+import { FileEarmarkExcelFill } from 'react-bootstrap-icons';
+import Footer from '../components/Footer';
+import { getFileById } from '../api/api';
+import '../styles/Detail.css';
 
-const DetailPage = () => {
+function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState([]);
-  const [tableInfo, setTableInfo] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [detail, setDetail] = useState(null);
+  const [excelData, setExcelData] = useState([]);
+  const [loadingExcel, setLoadingExcel] = useState(false);
+  const [excelError, setExcelError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
 
+  const rowsPerPage = 15;
+  const totalPages = Math.ceil(excelData.length / rowsPerPage);
+  const currentRows = excelData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  // Ambil detail file
   useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
+      const selected = await getFileById(id);
+      if (!selected) {
+        navigate('/NotFound');
+        return;
+      }
+      if (isMounted) setDetail(selected);
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [id, navigate]);
+
+  // Baca isi file Excel pakai Web Worker
+  useEffect(() => {
+    const fetchFile = async () => {
+      if (!detail?.url) return;
+
+      const format = detail.format?.toLowerCase() || '';
+      const urlLower = detail.url.toLowerCase();
+      const isExcel = urlLower.includes('.xlsx') || urlLower.includes('.xls') || format.includes('excel');
+      const isCSV = urlLower.includes('.csv') || format.includes('csv');
+
+      if (!isExcel && !isCSV) return;
+
       try {
-        const [dataRes, infoRes] = await Promise.all([
-          API.get(`/data/${id}`),
-          API.get(`/tables/${id}`),
-        ]);
-        setTableData(dataRes.data);
-        setTableInfo(infoRes.data);
-        setLoading(false);
+        setLoadingExcel(true);
+        setExcelError(null);
+
+        const response = await fetch(detail.url);
+        if (!response.ok) throw new Error(`Fetch gagal: ${response.status}`);
+        const buffer = await response.arrayBuffer();
+
+        // Jalankan worker
+        const worker = new Worker(new URL('../workers/excelWorker.js', import.meta.url));
+        worker.postMessage({ buffer, type: isCSV ? 'csv' : 'excel' });
+
+        worker.onmessage = (e) => {
+          const { success, data, error } = e.data;
+          if (success) {
+            setExcelData(data);
+          } else {
+            setExcelError(error);
+          }
+          setLoadingExcel(false);
+          worker.terminate();
+        };
       } catch (error) {
-        console.error('Gagal memuat data:', error);
-        setLoading(false);
+        setExcelError(error.message);
+        setLoadingExcel(false);
       }
     };
 
-    fetchData();
-  }, [id]);
+    fetchFile();
+  }, [detail]);
 
-  const handleDownload = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/tables/${id}/download`
-      );
-
-      if (!response.ok) throw new Error('Gagal mengunduh file');
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      const filename = `${tableInfo.name || 'tabel'}_${new Date()
-        .toISOString()
-        .slice(0, 10)}.xlsx`;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch (err) {
-      console.error(err);
-      alert('Gagal mengunduh file');
-    }
-  };
-
-  const handleBack = () => {
-    navigate('/');
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(tableData.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  // Membuat pagination dinamis dengan ...
-  const getPageNumbers = () => {
-    const maxVisiblePages = 5;
-    const pageNumbers = [];
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
-    } else {
-      const startPage = Math.max(2, currentPage - 1);
-      const endPage = Math.min(totalPages - 1, currentPage + 1);
-
-      pageNumbers.push(1);
-
-      if (startPage > 2) pageNumbers.push('...');
-      for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
-      if (endPage < totalPages - 1) pageNumbers.push('...');
-
-      pageNumbers.push(totalPages);
-    }
-
-    return pageNumbers;
-  };
+  if (!detail) {
+    return (
+      <div className="text-center mt-5">
+        <Spinner animation="border" variant="success" />
+      </div>
+    );
+  }
 
   return (
-    <Container className="mt-4">
-      <Button
-        variant="secondary"
-        onClick={handleBack}
-        className="floating-back-btn"
-      >
-        ← Kembali
-      </Button>
+    <>
+      <Container className="py-5 detail-page">
+        <div className="animated-bg"></div>
+        <div className="floating-shapes"></div>
 
-      <Card className="mb-3 shadow-sm border-start border-4 border-primary bg-light-subtle">
-        <Card.Body>
-          <Card.Title className="h4 mb-3 text-primary fw-semibold">
-            📊 {tableInfo.name || 'Nama Tabel Tidak Ditemukan'}
-          </Card.Title>
+        {/* Tombol Kembali */}
+        <Button
+  variant="secondary"
+  className="mb-4 custom-btn-outline"
+  onClick={() => navigate('/')}
+>
+  ← Kembali
+</Button>
 
-          <div className="row text-muted small">
-            {tableInfo.tahun && (
-              <div className="col-md-4 mb-2">
-                <strong>📅 Tahun:</strong> {tableInfo.tahun}
-              </div>
-            )}
-            {tableInfo.kategori && (
-              <div className="col-md-4 mb-2">
-                <strong>🏷️ Kategori:</strong> {tableInfo.kategori}
-              </div>
-            )}
-            {tableInfo.sumber && (
-              <div className="col-md-4 mb-2">
-                <strong>📚 Sumber:</strong> {tableInfo.sumber}
-              </div>
-            )}
-          </div>
-        </Card.Body>
-      </Card>
-
-
-      <div className="mb-3">
-        <h5>Deskripsi:</h5>
-        <p>{tableInfo.description || '-'}</p>
-      </div>
-
-      <div className="mb-4">
-        <Button variant="primary" onClick={handleDownload} className="me-2">
-          Download Excel
-        </Button>
-      </div>
-
-      {loading ? (
-        <div className="text-center">
-          <Spinner animation="border" variant="primary" />
-          <p>Memuat data...</p>
-        </div>
-      ) : tableData.length === 0 ? (
-        <Alert variant="warning">Tidak ada data.</Alert>
-      ) : (
-        <>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                {Object.keys(tableData[0].data).map((key, index) => (
-                  <th key={index}>{key}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, i) => (
-                <tr key={i}>
-                  {Object.values(item.data).map((val, j) => (
-                    <td key={j}>{val}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="d-flex justify-content-center mt-3">
-              <nav>
-                <ul className="pagination">
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(1)}>
-                      «
-                    </button>
-                  </li>
-                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
-                      &lt;
-                    </button>
-                  </li>
-
-                  {getPageNumbers().map((num, i) => (
-                    <li
-                      key={i}
-                      className={`page-item ${currentPage === num ? 'active' : ''} ${num === '...' ? 'disabled' : ''}`}
-                    >
-                      <button
-                        className="page-link"
-                        onClick={() => typeof num === 'number' && handlePageChange(num)}
-                      >
-                        {num}
-                      </button>
-                    </li>
-                  ))}
-
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
-                      &gt;
-                    </button>
-                  </li>
-                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(totalPages)}>
-                      »
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+        <Card className="shadow border-0 glass-card text-white">
+          <Card.Body>
+            {/* Header Dokumen */}
+            <div className="d-flex align-items-center mb-3">
+              <FileEarmarkExcelFill size={28} className="text-success me-2" />
+              <h3 className="mb-0">{detail.nama}</h3>
             </div>
-          )}
-        </>
-      )}
-    </Container>
-  );
-};
+            <p className="text-light">{detail.deskripsi}</p>
 
-export default DetailPage;
+            {/* Info File */}
+            <ul className="list-unstyled mb-4">
+              <li><strong>Kategori:</strong> <Badge bg="info">{detail.kategori}</Badge></li>
+              <li><strong>Tahun:</strong> {detail.tahun}</li>
+              <li><strong>Sumber:</strong> {detail.sumber}</li>
+              <li><strong>Format:</strong> {detail.format}</li>
+              <li><strong>Ukuran File:</strong> {detail.ukuran}</li>
+            </ul>
+
+            {/* Tombol Unduh */}
+            <a href={detail.url} target="_blank" rel="noopener noreferrer">
+              <Button variant="success">Unduh File</Button>
+            </a>
+
+            {/* Loading Spinner */}
+            {loadingExcel && (
+              <div className="text-center mt-4">
+                <Spinner animation="border" variant="light" />
+                <p className="mt-2 text-light">Membaca isi file...</p>
+              </div>
+            )}
+
+            {/* Tabel Data Excel */}
+            {!loadingExcel && excelData.length > 0 && (
+              <div className="mt-5">
+                <h5 className="mb-3">Isi File Excel:</h5>
+                <div className="table-responsive">
+                  <table className="table table-striped table-bordered">
+                    <thead className="table-light">
+                      <tr>
+                        {Object.keys(excelData[0]).map((key) => (
+                          <th key={key}>{key}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentRows.map((row, index) => (
+                        <tr key={index}>
+                          {Object.values(row).map((val, i) => (
+                            <td key={i}>{String(val)}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Navigasi Halaman */}
+                <div className="d-flex justify-content-between align-items-center mt-3">
+                  <Button
+                    variant="outline-light"
+                    className="custom-btn-outline"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                  >
+                    ← Sebelumnya
+                  </Button>
+
+                  <span className="text-muted">
+                    Halaman {currentPage} dari {totalPages}
+                  </span>
+
+                  <Button
+                    variant="outline-light"
+                    className="custom-btn-outline"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                  >
+                    Selanjutnya →
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Error */}
+            {excelError && (
+              <p className="mt-3 text-danger">
+                ⚠️ Gagal memuat file Excel: {excelError}
+              </p>
+            )}
+
+            {/* Kosong */}
+            {!loadingExcel && excelData.length === 0 && !excelError && (
+              <p className="mt-3 text-muted">
+                File Excel tidak berisi data yang bisa ditampilkan.
+              </p>
+            )}
+          </Card.Body>
+        </Card>
+      </Container>
+      <Footer />
+    </>
+  );
+}
+
+export default Detail;

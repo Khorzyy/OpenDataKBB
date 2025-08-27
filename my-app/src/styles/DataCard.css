@@ -1,0 +1,17 @@
+.glass-card {
+  background: rgba(255, 255, 255, 0.15); /* transparansi kaca */
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.data-card:hover .glass-card {
+  background: rgba(255, 255, 255, 0.25); /* lebih terang saat hover */
+}
+
+.data-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
