@@ -9,7 +9,11 @@ import CreateAccount from './admin/CreateAccount';
 import RequireAuth from './auth/RequireAuth';
 import AdminView from './admin/AdminView';
 import Layout from './components/Layout';
-import Footer from './components/Footer';
+import NotFound from './pages/not-found';
+import Sejarah from './pages/Sejarah';
+import VisiMisi from './pages/visimisi';
+import Logo from './pages/Logo';
+import DataSet from './pages/DataSet';
 
 function App() {
   return (
@@ -61,7 +65,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/akun"
+            path="/owner/akun"
             element={
               <RequireAuth>
                 <CreateAccount />
@@ -74,6 +78,46 @@ function App() {
               <RequireAuth>
                 <AdminView />
               </RequireAuth>
+            }
+          />
+          <Route
+            path='/sejarah'
+            element={
+              <Layout>
+                <Sejarah />
+              </Layout>
+            }
+          />
+          <Route
+            path='/visimisi'
+            element={
+              <Layout>
+                <VisiMisi />
+              </Layout>
+            }
+          />
+          <Route
+            path='/logo'
+            element={
+              <Layout>
+                <Logo />
+              </Layout>
+            }
+          />
+          <Route
+            path='/dataSet'
+            element={
+              <Layout>
+                <DataSet />
+              </Layout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <NotFound />
+              </Layout>
             }
           />
         </Routes>

@@ -10,42 +10,22 @@ import {
   Form,
 } from 'react-bootstrap';
 import { getAllFiles } from '../api/api';
-
+import heroBg from "../assets/kbb-vector.png";
 import DataCard from '../components/DataCard';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { FaDatabase, FaFilter, FaListOl } from 'react-icons/fa';
 import '../styles/Home.css';
-
-function Search({ searchTerm, setSearchTerm }) {
-  return (
-    <Form
-      className="d-flex mb-5 justify-content-center"
-      onSubmit={(e) => e.preventDefault()}
-    >
-      <Form.Control
-        type="search"
-        placeholder="🔍 Cari data statistik..."
-        className="me-2 shadow-sm rounded-pill px-4"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <Button variant="success" className="rounded-pill px-4 shadow-sm">
-        Cari
-      </Button>
-    </Form>
-  );
-}
+import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 function Home() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('dataset'); // dataset | sejarah | visimisi
-  const itemsPerPage = 6;
+  const [activeTab, setActiveTab] = useState('dataset');
+  const itemsPerPage = 4;
 
   useEffect(() => {
     getAllFiles().then((res) => {
@@ -53,124 +33,114 @@ function Home() {
       setLoading(false);
       AOS.init({ duration: 800, once: true });
     });
-    setCurrentPage(1);
-  }, [searchTerm]);
+  }, []);
 
-
-  const filteredData = data.filter((item) =>
-    (item.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.deskripsi || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  const filteredData = data.filter((item) => {
+    const term = searchTerm.trim().toLowerCase();
+    return (
+      (item.name || '').toLowerCase().includes(term) ||
+      (item.description || '').toLowerCase().includes(term)
+    );
+  });
 
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const indexOfFirstItem = indexOfLastItem;
+  const currentItems = filteredData.slice(indexOfLastItem || undefined);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // === (5) DATA TERBARU ===
+  const latestData = data.slice(0, 3);
 
   return (
     <>
+      <Helmet>
+        <title>Home - OpenDataKBB</title>
+      </Helmet>
 
-      <main className="home-main bg-light py-5">
+      {/* HERO */}
+      <div
+        className="hero-section mb-5 text-white rounded shadow d-flex align-items-center home-bg-pattern"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${heroBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          minHeight: "70vh",
+          padding: "5rem 2rem",
+        }}
+      >
+        <div data-aos="fade-up">
+          <h1 className="display-4 fw-bold mb-3">Open Data Kabupaten Bandung Barat</h1>
+          <p className="fs-5 mb-0">
+            Temukan data terbuka yang diproduksi oleh Pemerintah Kabupaten Bandung Barat
+          </p>
+        </div>
+      </div>
+
+      <main className="home-main bg-light py-5 home-bg-pattern">
         <Container>
-          {/* 🖼 Hero */}
-          <div className="hero-section mb-5 p-5 text-white text-center rounded shadow" style={{ background: '#28a745' }}>
-            <h1 className="display-5 fw-bold mb-2">Open Data Kabupaten Bandung Barat</h1>
-            <p className="mb-0">Temukan data publik terkini dari berbagai sektor pemerintahan.</p>
-          </div>
 
-          {/* 🔍 Search */}
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          {/* (3) SECTION MENGAPA OPEN DATA */}
+          <section className="mb-5" data-aos="fade-up">
+            <h3 className="fw-bold text-center mb-3 text-primary">Kenapa Open Data Penting?</h3>
+            <p className="text-center text-muted mb-4">
+              Open Data membantu meningkatkan transparansi, memperkuat partisipasi publik, dan mendukung inovasi berbasis data.
+            </p>
 
-          {/* Tab Switcher */}
-          <Row className="mb-4 justify-content-center">
-            <Col xs="auto">
-              <Button
-                variant={activeTab === 'dataset' ? 'success' : 'outline-success'}
-                className="rounded-pill px-4 shadow-sm"
-                onClick={() => setActiveTab('dataset')}
-              >
-                DataSet
-              </Button>
-            </Col>
-            <Col xs="auto">
-              <Button
-                variant={activeTab === 'sejarah' ? 'primary' : 'outline-primary'}
-                className="rounded-pill px-4 shadow-sm"
-                onClick={() => setActiveTab('sejarah')}
-              >
-                Sejarah
-              </Button>
-            </Col>
-            <Col xs="auto">
-              <Button
-                variant={activeTab === 'visimisi' ? 'secondary' : 'outline-secondary'}
-                className="rounded-pill px-4 shadow-sm"
-                onClick={() => setActiveTab('visimisi')}
-              >
-                Visi Misi
-              </Button>
-            </Col>
-          </Row>
-
-          {/* 🔢 Info Panel */}
-          {!loading && (
-            <Row className="mb-4 text-center">
-              <Col md={4}>
-                <div className="bg-white shadow-sm rounded p-3">
-                  <FaDatabase size={24} className="text-success mb-2" />
-                  <p><strong>Total Data:</strong> <Badge bg="success">{data.length}</Badge></p>
+            <Row className="text-center">
+              <Col md={4} data-aos="zoom-in">
+                <div className="p-4 bg-white rounded shadow-sm border-start border-4 border-primary">
+                  <h5 className="fw-bold">Transparansi</h5>
+                  <p className="text-muted small">Memberikan akses data yang jelas kepada publik.</p>
                 </div>
               </Col>
-              <Col md={4}>
-                <div className="bg-white shadow-sm rounded p-3">
-                  <FaFilter size={24} className="text-primary mb-2" />
-                  <p><strong>Hasil Pencarian:</strong> <Badge bg="primary">{filteredData.length}</Badge></p>
+
+              <Col md={4} data-aos="zoom-in" data-aos-delay="150">
+                <div className="p-4 bg-white rounded shadow-sm border-start border-4 border-success">
+                  <h5 className="fw-bold">Inovasi</h5>
+                  <p className="text-muted small">Mendorong pengembangan aplikasi berbasis data.</p>
                 </div>
               </Col>
-              <Col md={4}>
-                <div className="bg-white shadow-sm rounded p-3">
-                  <FaListOl size={24} className="text-secondary mb-2" />
-                  <p><strong>Halaman:</strong> {currentPage} / {totalPages}</p>
+
+              <Col md={4} data-aos="zoom-in" data-aos-delay="300">
+                <div className="p-4 bg-white rounded shadow-sm border-start border-4 border-warning">
+                  <h5 className="fw-bold">Efisiensi</h5>
+                  <p className="text-muted small">Mempermudah analisis dan pengambilan keputusan.</p>
                 </div>
               </Col>
             </Row>
-          )}
+          </section>
 
-          {/* ⏳ Loading */}
-          {loading && (
-            <div className="text-center mt-5">
-              <Spinner animation="border" variant="success" />
-            </div>
-          )}
+          {/* Divider */}
+          <hr className="section-divider my-5" />
 
-          {/* ⚠️ Tidak Ditemukan */}
-          {!loading && currentItems.length === 0 && (
-            <Alert variant="warning" className="text-center">
-              Tidak ada data ditemukan untuk kata kunci <strong>"{searchTerm}"</strong>.
-            </Alert>
-          )}
+          {/* (5) DATA TERBARU */}
+          {!loading && (
+            <section className="mb-5" data-aos="fade-up">
+              <h3 className="fw-bold text-center text-success mb-4">Data Terbaru</h3>
+              {/* INFO PANEL */}
+              {!loading && (
+                <Row className="mb-5 text-center">
+                  <Col md={4}>
+                    <div className="bg-white shadow-sm rounded p-4 border-start border-4 border-success">
+                      <FaDatabase size={26} className="text-success mb-2" />
+                      <p className="m-0">
+                        <strong>Total Data:</strong>{' '}
+                        <Badge bg="success">{data.length}</Badge>
+                      </p>
+                    </div>
+                  </Col>
+                </Row>
+              )}
 
-          {/* 🔄 Tab Content in Dark Card */}
-          <div
-            className="p-4 rounded shadow mb-4"
-            style={{ backgroundColor: '#2c2f36', color: '#fff' }}
-          >
-            <h4 className="mb-3 text-center">
-              {activeTab === 'dataset' && '📊 Data Statistik'}
-              {activeTab === 'sejarah' && '📜 Sejarah Singkat'}
-              {activeTab === 'visimisi' && '🎯 Visi Dan Misi'}
-            </h4>
-
-            {activeTab === 'dataset' && (
-              <Row xs={1} md={2} className="g-4">
-                {currentItems.map((item) => (
+              <Row xs={1} md={3} className="g-4">
+                {latestData.map((item) => (
                   <Col key={item._id}>
-                    <div className="animate__animated animate__fadeInUp">
+                    <div data-aos="zoom-in">
                       <DataCard
                         id={item._id}
                         name={item.name}
-                        description={item.description}
+                        kategori={item.kategori}
                         tahun={item.tahun}
                         sumber={item.sumber}
                       />
@@ -178,162 +148,94 @@ function Home() {
                   </Col>
                 ))}
               </Row>
-            )}
+            </section>
+          )}
 
-            {activeTab === 'sejarah' && (
-              <div className="container py-5">
-                <div className="text-center mb-4">
-                  <h2 className="fw-bold">🏛️ Sejarah Kabupaten Bandung Barat</h2>
-                </div>
-                <div className="fs-5" style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'justify' }}>
-                  <p>
-                    Kabupaten Bandung Barat (KBB) adalah salah satu daerah otonom di Provinsi Jawa Barat, Indonesia,
-                    yang resmi dibentuk pada tanggal <strong>2 Januari 2007</strong> berdasarkan Undang-Undang Nomor 12 Tahun 2007.
-                    Pembentukan kabupaten ini merupakan hasil pemekaran dari Kabupaten Bandung induk, dengan tujuan untuk meningkatkan
-                    efisiensi pelayanan publik, pemerataan pembangunan, dan percepatan kesejahteraan masyarakat di wilayah barat Kabupaten Bandung.
-                  </p>
+          {/* Divider */}
+          <hr className="section-divider my-5" />
 
-                  <p>
-                    KBB mencakup wilayah strategis di bagian barat Provinsi Jawa Barat yang berbatasan langsung dengan Kota Bandung, Kota Cimahi,
-                    Kabupaten Cianjur, Kabupaten Purwakarta, dan Kabupaten Subang. Ibukota Kabupaten Bandung Barat ditetapkan di <strong>Ngamprah</strong>.
-                    Pemilihan Ngamprah sebagai pusat pemerintahan didasarkan pada pertimbangan geografis dan kesiapan infrastruktur.
-                  </p>
+          {/* LOADING */}
+          {loading && (
+            <div className="text-center mt-5">
+              <Spinner animation="border" variant="success" />
+            </div>
+          )}
 
-                  <p>
-                    Sejak terbentuk, Kabupaten Bandung Barat terus berkembang pesat, baik dalam aspek ekonomi, sosial, pendidikan, maupun infrastruktur.
-                    Wilayah ini dikenal memiliki potensi besar di sektor pariwisata seperti Lembang, sektor pertanian di daerah selatan, dan kawasan industri
-                    di wilayah timur.
-                  </p>
+          {/* Divider */}
+          <hr className="section-divider my-5" />
 
-                  <p>
-                    Pemerintahan Kabupaten Bandung Barat menjalankan berbagai program pembangunan yang berorientasi pada peningkatan kualitas hidup
-                    masyarakat, transparansi pemerintahan, serta inovasi digital termasuk peluncuran platform <strong>Open Data KBB</strong> sebagai bagian
-                    dari komitmen terhadap keterbukaan informasi publik.
-                  </p>
+          {/* (8) SECTION TENTANG PLATFORM */}
+          <section className="mb-5" data-aos="fade-up">
+            <h3 className="fw-bold text-center mb-3 text-primary">
+              Tentang OpenDataKBB
+            </h3>
+            <p className="text-center text-muted mb-4">
+              Platform ini berfungsi sebagai pusat data terbuka Kabupaten Bandung Barat
+              untuk membantu masyarakat, peneliti, dan pengambil keputusan.
+            </p>
 
-                  <p>
-                    Hingga saat ini, Kabupaten Bandung Barat terus melakukan pembenahan dalam tata kelola pemerintahan, peningkatan pelayanan publik,
-                    serta penguatan partisipasi masyarakat dalam pembangunan berkelanjutan demi mewujudkan visi sebagai kabupaten yang <strong>maju,
-                      mandiri, dan berdaya saing</strong>.
+            <Row className="text-center">
+              <Col md={4} data-aos="zoom-in">
+                <div className="p-4 bg-white rounded shadow-sm">
+                  <h5 className="fw-bold">Akses Publik</h5>
+                  <p className="text-muted small">
+                    Data dapat diunduh siapa saja tanpa batasan.
                   </p>
                 </div>
-              </div>
-            )}
+              </Col>
 
-            {activeTab === 'visimisi' && (
-              <div className="container py-5">
-                <div className="text-center mb-4">
-                  <h2 className="fw-bold">🎯 Visi</h2>
-                  <p className="fst-italic fs-5 mt-3">
-                    "Menjadi pusat data terbuka Kabupaten Bandung Barat yang informatif, akurat, dan mudah diakses untuk mendukung tata kelola pemerintahan yang transparan dan partisipatif."
+              <Col md={4} data-aos="zoom-in" data-aos-delay="150">
+                <div className="p-4 bg-white rounded shadow-sm">
+                  <h5 className="fw-bold">Data Terverifikasi</h5>
+                  <p className="text-muted small">
+                    Data bersumber dari dinas resmi Kabupaten Bandung Barat.
                   </p>
                 </div>
+              </Col>
 
-                <div className="text-center mb-4">
-                  <h2 className="fw-bold">🛠️ Misi</h2>
+              <Col md={4} data-aos="zoom-in" data-aos-delay="300">
+                <div className="p-4 bg-white rounded shadow-sm">
+                  <h5 className="fw-bold">Update Berkala</h5>
+                  <p className="text-muted small">
+                    Dataset rutin diperbarui sesuai ketersediaan data.
+                  </p>
                 </div>
-                <ol className="fs-5 mx-auto" style={{ maxWidth: '800px' }}>
-                  <li className="mb-3">
-                    Meningkatkan keterbukaan informasi publik melalui penyediaan data sektoral yang valid dan terstruktur.
-                  </li>
-                  <li className="mb-3">
-                    Mendorong partisipasi masyarakat, akademisi, dan pelaku usaha dalam pemanfaatan data untuk inovasi dan pembangunan daerah.
-                  </li>
-                  <li className="mb-3">
-                    Memperkuat koordinasi antar perangkat daerah dalam pengumpulan, pengelolaan, dan publikasi data.
-                  </li>
-                  <li className="mb-3">
-                    Menyediakan platform digital yang mudah diakses dan user-friendly sebagai pusat layanan data terbuka.
-                  </li>
-                  <li className="mb-3">
-                    Menjaga akurasi dan keterkinian data melalui mekanisme verifikasi dan pembaruan berkala.
-                  </li>
-                </ol>
-              </div>
-            )}
+              </Col>
+            </Row>
+          </section>
 
-            {/* ✅ Pagination now inside card */}
-            {activeTab === 'dataset' && totalPages > 1 && (
-              <Row className="mt-4">
-                <Col className="d-flex justify-content-center flex-wrap gap-2">
-                  <Button
-                    variant="outline-light"
-                    size="sm"
-                    className="rounded-pill"
-                    onClick={() => setCurrentPage(1)}
-                    disabled={currentPage === 1}
-                  >
-                    «
-                  </Button>
+          {/* Divider */}
+          <hr className="section-divider my-5" />
 
-                  <Button
-                    variant="outline-light"
-                    size="sm"
-                    className="rounded-pill"
-                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    &lt;
-                  </Button>
+          {/* (9) SECTION CTA AJAKAN */}
+          <section className="text-center mb-5" data-aos="fade-up">
+            <h3 className="fw-bold mb-3 text-success">
+              Ayo Gunakan Data untuk Membangun KBB!
+            </h3>
+            <p className="text-muted mb-4">
+              Data bukan hanya angka—tetapi alat untuk menciptakan kebijakan yang lebih baik.
+            </p>
 
-                  {(() => {
-                    const buttons = [];
-                    const maxVisible = 5;
-                    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-                    let end = Math.min(totalPages, start + maxVisible - 1);
+            <Link to="/dataset">
+              <Button variant="success" className="px-4 py-2 rounded-pill shadow">
+                Jelajahi Semua Data
+              </Button>
+            </Link>
+          </section>
 
-                    if (end - start < maxVisible - 1) {
-                      start = Math.max(1, end - maxVisible + 1);
-                    }
+          {/* Divider */}
+          <hr className="section-divider my-5" />
 
-                    if (start > 1) {
-                      buttons.push(<Button key="start-ellipsis" variant="dark" disabled>…</Button>);
-                    }
+          {/* (10) SECTION HUBUNGI KAMI */}
+          <section className="text-center mb-5" data-aos="fade-up">
+            <h3 className="fw-bold text-primary mb-3">Hubungi Kami</h3>
+            <p className="text-muted">
+              Jika Anda memiliki pertanyaan atau butuh data tambahan, silakan hubungi kami.
+            </p>
 
-                    for (let i = start; i <= end; i++) {
-                      buttons.push(
-                        <Button
-                          key={i}
-                          variant={i === currentPage ? 'success' : 'outline-light'}
-                          size="sm"
-                          className="rounded-pill"
-                          onClick={() => setCurrentPage(i)}
-                        >
-                          {i}
-                        </Button>
-                      );
-                    }
-
-                    if (end < totalPages) {
-                      buttons.push(<Button key="end-ellipsis" variant="dark" disabled>…</Button>);
-                    }
-
-                    return buttons;
-                  })()}
-
-                  <Button
-                    variant="outline-light"
-                    size="sm"
-                    className="rounded-pill"
-                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    &gt;
-                  </Button>
-
-                  <Button
-                    variant="outline-light"
-                    size="sm"
-                    className="rounded-pill"
-                    onClick={() => setCurrentPage(totalPages)}
-                    disabled={currentPage === totalPages}
-                  >
-                    »
-                  </Button>
-                </Col>
-              </Row>
-            )}
-          </div>
+            <p className="fw-bold mt-3 mb-1">Email: <span className='text-muted'>statistikominfo@gmail.com</span></p>
+            <p className="fw-bold mb-1">Alamat: <span className='text-muted'>Gedung B lt.2, Des.Mekarsari, Kec.Ngamprah, Kabupaten Bandung Barat, Jawa Barat 40552</span></p>
+          </section>
         </Container>
       </main>
     </>

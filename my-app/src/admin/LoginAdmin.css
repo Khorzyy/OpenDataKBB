@@ -1,31 +1,77 @@
-/* LoginAdmin.css */
 .login-page {
-  background: linear-gradient(to right, #1e3c72, #2a5298);
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.login-box {
-  width: 100%;
-  max-width: 400px;
-  padding: 30px;
-  box-sizing: border-box;
+/* Subtle glowing background effect */
+.login-page::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  top: 20%;
+  left: 10%;
+  transform: rotate(30deg);
+  filter: blur(80px);
 }
 
 .login-card {
-  background-color: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
   border: none;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 2;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 50px rgba(0, 0, 0, 0.3);
 }
 
 .login-title {
   font-weight: 700;
   color: #2a5298;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .form-label {
-  font-weight: 500;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  height: 45px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+  border-color: #2a5298;
+  box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+}
+
+.loginbutton {
+  height: 45px;
+  background: linear-gradient(90deg, #1e3c72, #2a5298);
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.loginbutton:hover {
+  background: linear-gradient(90deg, #2a5298, #1e3c72);
+  transform: translateY(-2px);
+}
+
+.text-muted {
+  color: #777 !important;
 }

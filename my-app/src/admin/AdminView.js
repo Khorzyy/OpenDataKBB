@@ -10,6 +10,7 @@ import {
     Spinner,
 } from 'react-bootstrap';
 import '../pages/TableDataView.css';
+import { Helmet } from 'react-helmet';
 
 const DetailPage = () => {
     const { id } = useParams();
@@ -103,6 +104,9 @@ const DetailPage = () => {
 
     return (
         <Container className="mt-4">
+            <Helmet>
+                <title>{tableInfo.name || 'Admin | Detail Tabel'}</title>
+            </Helmet>
             <Button
                 variant="secondary"
                 onClick={handleBack}

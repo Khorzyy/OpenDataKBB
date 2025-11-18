@@ -1,39 +1,43 @@
-import { Card, Badge } from 'react-bootstrap';
-import { FileEarmarkExcelFill } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
+// components/DataCard.js
+import { Card, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { FaDatabase } from 'react-icons/fa';
+import '../styles/DataCard.css';
 
-function DataCard({ id, name, description, tahun, sumber }) {
-  const navigate = useNavigate();
-
+function DataCard({ id, name, tahun, sumber, kategori }) {
   return (
-    <Card
-      className="mb-4 shadow-sm border-0"
-      onClick={() => navigate(`/detail/${id}`)}
-      style={{
-        cursor: 'pointer',
-        backgroundColor: '#3b3f47',
-        color: '#fff',
-        borderRadius: '12px',
-        transition: 'transform 0.2s ease',
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-    >
-      <Card.Body>
-        <div className="d-flex align-items-center mb-3">
-          <FileEarmarkExcelFill className="me-2 text-success" size={26} />
-          <Card.Title className="mb-0">{name}</Card.Title>
+    <Card className="data-card-custom shadow-sm">
+      <div className="d-flex align-items-start gap-3 p-3">
+
+        {/* ICON BULAT */}
+        <div className="data-icon-wrapper">
+          <FaDatabase size={20} />
         </div>
 
-        <Card.Text style={{ fontSize: '0.95rem' }}>
-          {description}
-        </Card.Text>
+        {/* KONTEN */}
+        <div className="flex-grow-1">
+          <h5 className="fw-semibold mb-1 text-dark fs-6">{name}</h5>
+          <div className="metadata small mb-3">
+            <span className='me-2'>
+              <strong>Kategori:</strong> {kategori || '-'}
+            </span>
+            <span >
+              <strong>Tahun:</strong> {tahun || '-'}
+            </span>
+            <br />
+            <span>
+              <strong>Sumber:</strong> {sumber || '-'}
+            </span>
+          </div>
 
-        <div className="d-flex justify-content-between mt-3">
-          <Badge bg="light" text="dark">{tahun}</Badge>
-          <Badge bg="light" text="dark">{sumber}</Badge>
+          {/* BUTTON */}
+          <Link to={`/detail/${id}`}>
+            <Button size="sm" className="detail-btn">
+              Lihat Detail
+            </Button>
+          </Link>
         </div>
-      </Card.Body>
+      </div>
     </Card>
   );
 }

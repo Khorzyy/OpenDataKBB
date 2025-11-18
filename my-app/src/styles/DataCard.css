@@ -1,0 +1,36 @@
+.data-card-custom {
+  background: #ffffff;
+  border-left: 6px solid #27ae60;
+  /* hijau */
+  border-radius: 14px;
+  transition: all 0.25s ease;
+}
+
+.data-card-custom:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.data-icon-wrapper {
+  background: rgba(46, 204, 113, 0.15);
+  /* hijau pastel */
+  color: #27ae60;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-btn {
+  background-color: #3498db;
+  /* biru */
+  border: none;
+  padding: 6px 16px;
+  border-radius: 50px;
+}
+
+.detail-btn:hover {
+  background-color: #2980b9;
+}

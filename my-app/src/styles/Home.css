@@ -9,7 +9,7 @@
 }
 
 .logo-img {
-  width: 45px;
+  width: 50px;
   height: auto;
   transition: transform 0.3s ease;
 }
@@ -19,7 +19,7 @@
 }
 
 .nav-links a {
-  color: #333;
+  color: #2e2828;
   font-weight: 500;
   position: relative;
   text-decoration: none;
@@ -54,18 +54,15 @@
 /* Main area */
 .home-main {
   background-color: #f8f9fa;
-  min-height: 80vh;
+  min-height: 100vh;
   padding: 2rem 0;
 }
 
 /* Hero Section */
 .hero-section {
-    border-radius: 25px;
-  background-image: linear-gradient(
-      rgba(0, 0, 0, 0.5),
-      rgba(0, 0, 0, 0.6)
-    ),
-    url('../assets/BG.jfif');
+  border-radius: 25px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.6));
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -80,20 +77,26 @@
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-    /* .hero-overlay {
-    background-color: rgba(0, 0, 0, 0.4);
-    padding: 60px 20px;
-    border-radius: 12px;
-    max-width: 800px;
-    margin: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    } */
+.no-padding-top {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.hero-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 60px 20px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
 
 .hero-divider {
   width: 100px;
@@ -102,7 +105,7 @@
   opacity: 0.8;
 }
 
-/* Button Enhancements */   
+/* Button Enhancements */
 button {
   transition: all 0.3s ease-in-out;
 }

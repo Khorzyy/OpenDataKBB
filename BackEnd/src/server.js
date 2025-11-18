@@ -21,7 +21,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGOURI)
+mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('MongoDB Atlas connected'))
   .catch((err) => console.error('Connection error:', err));
 

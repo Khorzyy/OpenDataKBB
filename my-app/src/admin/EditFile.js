@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Alert, Spinner, Card } from 'react-bootstrap';
 import { getAllFiles, updateFile } from '../api/api'; // pastikan getAllFiles dan updateFile valid
 import { FaEdit } from 'react-icons/fa';
+import { Helmet } from 'react-helmet';
 
 function EditFile() {
     const { id } = useParams();
@@ -76,6 +77,9 @@ function EditFile() {
 
     return (
         <main className="py-5 min-vh-100" style={{ background: '#f5f7fa' }}>
+            <Helmet>
+                <title>Admin | Edit Data</title>
+            </Helmet>
             <Container>
                 <Row className="justify-content-center">
                     <Col md={8}>

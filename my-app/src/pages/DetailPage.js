@@ -1,3 +1,4 @@
+// src/pages/DetailPage.js
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import API from '../api/api';
@@ -6,10 +7,13 @@ import {
   Card,
   Button,
   Table,
-  Alert,
   Spinner,
+  Badge,
+  Alert
 } from 'react-bootstrap';
 import './TableDataView.css';
+import { Helmet } from 'react-helmet';
+import { FaArrowLeft, FaCalendar, FaTag, FaBook, FaDownload } from 'react-icons/fa';
 
 const DetailPage = () => {
   const { id } = useParams();
@@ -19,7 +23,7 @@ const DetailPage = () => {
   const [tableInfo, setTableInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = 25;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,26 +40,27 @@ const DetailPage = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    document.title = tableInfo.name || 'Loading...';
+  }, [tableInfo]);
 
   const handleDownload = async () => {
     try {
       const response = await fetch(
         `http://localhost:5000/api/tables/${id}/download`
       );
-
       if (!response.ok) throw new Error('Gagal mengunduh file');
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const filename = `${tableInfo.name || 'tabel'}_${new Date()
+      a.download = `${tableInfo.name || 'tabel'}_${new Date()
         .toISOString()
         .slice(0, 10)}.xlsx`;
-      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -65,24 +70,18 @@ const DetailPage = () => {
     }
   };
 
-  const handleBack = () => {
-    navigate('/');
-  };
+  const handleBack = () => navigate('/dataset');
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(tableData.length / itemsPerPage);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Membuat pagination dinamis dengan ...
   const getPageNumbers = () => {
     const maxVisiblePages = 5;
     const pageNumbers = [];
-
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
     } else {
@@ -90,67 +89,59 @@ const DetailPage = () => {
       const endPage = Math.min(totalPages - 1, currentPage + 1);
 
       pageNumbers.push(1);
-
       if (startPage > 2) pageNumbers.push('...');
       for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
       if (endPage < totalPages - 1) pageNumbers.push('...');
-
       pageNumbers.push(totalPages);
     }
-
     return pageNumbers;
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="py-4">
+      <Helmet>
+        <title>{tableInfo.name}</title>
+      </Helmet>
+
       <Button
-        variant="secondary"
+        variant="outline-secondary"
         onClick={handleBack}
-        className="floating-back-btn"
+        className="mb-3"
       >
-        ← Kembali
+        <FaArrowLeft className="me-1" /> Kembali
       </Button>
 
-      <Card className="mb-3 shadow-sm border-start border-4 border-primary bg-light-subtle">
+      <Card className="mb-4 shadow-sm border-start border-4 border-primary">
         <Card.Body>
-          <Card.Title className="h4 mb-3 text-primary fw-semibold">
-            📊 {tableInfo.name || 'Nama Tabel Tidak Ditemukan'}
-          </Card.Title>
-
-          <div className="row text-muted small">
+          <h3 className="fw-bold text-primary mb-3">📊 {tableInfo.name}</h3>
+          <div className="d-flex flex-wrap gap-3 text-muted mb-3">
             {tableInfo.tahun && (
-              <div className="col-md-4 mb-2">
-                <strong>📅 Tahun:</strong> {tableInfo.tahun}
-              </div>
+              <Badge bg="info">
+                <FaCalendar className="me-1" /> {tableInfo.tahun}
+              </Badge>
             )}
             {tableInfo.kategori && (
-              <div className="col-md-4 mb-2">
-                <strong>🏷️ Kategori:</strong> {tableInfo.kategori}
-              </div>
+              <Badge bg="success">
+                <FaTag className="me-1" /> {tableInfo.kategori}
+              </Badge>
             )}
             {tableInfo.sumber && (
-              <div className="col-md-4 mb-2">
-                <strong>📚 Sumber:</strong> {tableInfo.sumber}
-              </div>
+              <Badge bg="warning" text="dark">
+                <FaBook className="me-1" /> {tableInfo.sumber}
+              </Badge>
             )}
           </div>
+          <p style={{ whiteSpace: 'pre-line' }}>
+            {tableInfo.description || '-'}
+          </p>
+          <Button variant="primary" onClick={handleDownload}>
+            <FaDownload className="me-1" /> Download Excel
+          </Button>
         </Card.Body>
       </Card>
 
-
-      <div className="mb-3">
-        <h5>Deskripsi:</h5>
-        <p>{tableInfo.description || '-'}</p>
-      </div>
-
-      <div className="mb-4">
-        <Button variant="primary" onClick={handleDownload} className="me-2">
-          Download Excel
-        </Button>
-      </div>
-
       {loading ? (
-        <div className="text-center">
+        <div className="text-center py-5">
           <Spinner animation="border" variant="primary" />
           <p>Memuat data...</p>
         </div>
@@ -158,39 +149,36 @@ const DetailPage = () => {
         <Alert variant="warning">Tidak ada data.</Alert>
       ) : (
         <>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr>
-                {Object.keys(tableData[0].data).map((key, index) => (
-                  <th key={index}>{key}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, i) => (
-                <tr key={i}>
-                  {Object.values(item.data).map((val, j) => (
-                    <td key={j}>{val}</td>
+          <div className="table-responsive shadow-sm rounded mb-4">
+            <Table striped bordered hover responsive>
+              <thead className="table-primary">
+                <tr>
+                  {Object.keys(tableData[0].data).map((key, i) => (
+                    <th key={i}>{key}</th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {currentItems.map((item, i) => (
+                  <tr key={i}>
+                    {Object.values(item.data).map((val, j) => (
+                      <td key={j}>{val}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
-            <div className="d-flex justify-content-center mt-3">
+            <div className="d-flex justify-content-center">
               <nav>
                 <ul className="pagination">
                   <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(1)}>
-                      «
-                    </button>
+                    <button className="page-link" onClick={() => handlePageChange(1)}>«</button>
                   </li>
                   <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
-                      &lt;
-                    </button>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
                   </li>
 
                   {getPageNumbers().map((num, i) => (
@@ -208,14 +196,10 @@ const DetailPage = () => {
                   ))}
 
                   <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
-                      &gt;
-                    </button>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
                   </li>
                   <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                    <button className="page-link" onClick={() => handlePageChange(totalPages)}>
-                      »
-                    </button>
+                    <button className="page-link" onClick={() => handlePageChange(totalPages)}>»</button>
                   </li>
                 </ul>
               </nav>
