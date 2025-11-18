@@ -32,7 +32,7 @@ function CrudTable({ data, refreshData }) {
               <Button
                 variant="danger"
                 size="sm"
-                onClick={() => handleDelete(item.id)}
+                onClick={() => handleDelete(item._id)}
               >
                 Hapus
               </Button>

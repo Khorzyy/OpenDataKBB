@@ -1,38 +1,147 @@
-/* Welcome Card */
-.welcome-card {
-  background: linear-gradient(135deg, #e9f9f1, #ffffff);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transition: transform 0.15s ease;
-}
-.welcome-card:hover {
-  transform: translateY(-3px);
+/* Header area */
+.custom-header {
+  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  padding: 1rem 0;
+  border-bottom: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* Tab Styling */
-.custom-tabs .nav-link {
-  border-radius: 20px 20px 0 0 !important;
-  margin: 0 4px;
+.logo-img {
+  width: 50px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+  transform: rotate(5deg) scale(1.1);
+}
+
+.nav-links a {
+  color: #2e2828;
+  font-weight: 500;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #0d6efd;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #0d6efd;
+  transition: 0.3s;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.brand-text {
+  color: #0d6efd;
+}
+
+
+
+/* Main area */
+.home-main {
   background-color: #f8f9fa;
-  color: #6c757d;
-  transition: all 0.2s ease;
-}
-.custom-tabs .nav-link.active {
-  background-color: #28a745 !important;
-  color: white !important;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.custom-tabs .nav-link:hover {
-  background-color: #e8f7ed;
-  color: #28a745;
+  min-height: 100vh;
+  padding: 2rem 0;
 }
 
-/* Tab Content Fade */
-.tab-content-wrapper {
-  animation: fadeIn 0.3s ease;
+/* Hero Section */
+.hero-section {
+  border-radius: 25px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.6));
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 100px 0;
+  margin-bottom: 3rem;
+  position: relative;
+  animation: fadeInHero 1.2s ease-in-out;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeInHero {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.no-padding-top {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.hero-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 60px 20px;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-divider {
+  width: 100px;
+  margin: 20px auto 0;
+  border-top: 3px solid #ffffff;
+  opacity: 0.8;
+}
+
+/* Button Enhancements */
+button {
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Card hover effect */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Spinner spacing */
+.spinner-border {
+  margin-top: 50px;
+}
+
+/* Alert tweaks */
+.alert {
+  border-radius: 10px;
+  font-size: 1.1rem;
+}
+
+/* Pagination buttons */
+.pagination-buttons {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination-buttons:hover {
+  background-color: #343a40;
+  color: #fff;
 }

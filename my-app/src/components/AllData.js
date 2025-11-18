@@ -84,23 +84,23 @@ function AllDataCard() {
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
- useEffect(() => {
-  const fetchData = async () => {
-    try {
-     const files = await getAllFiles();
-setData(files); // langsung pakai hasil dari API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const files = await getAllFiles();
+        setData(files); // langsung pakai hasil dari API
 
-    } catch (error) {
-      console.error("Gagal ambil data:", error);
-      setData([]);
-    } finally {
-      setLoading(false);
-      AOS.init({ duration: 500, once: true });
-    }
-  };
-  fetchData();
-  setCurrentPage(1);
-}, [searchTerm]);
+      } catch (error) {
+        console.error("Gagal ambil data:", error);
+        setData([]);
+      } finally {
+        setLoading(false);
+        AOS.init({ duration: 500, once: true });
+      }
+    };
+    fetchData();
+    setCurrentPage(1);
+  }, [searchTerm]);
 
 
 
@@ -109,100 +109,100 @@ setData(files); // langsung pakai hasil dari API
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-  <main className="all-data-page">
-    <div className="animated-bg"></div>
+    <main className="all-data-page">
+      <div className="animated-bg"></div>
 
-    <h2 
-  className="section-title text-center my-4" 
-  data-aos="fade-down"
->
-  Semua Data Statistik
-</h2>
+      <h2
+        className="section-title text-center my-4"
+        data-aos="fade-down"
+      >
+        Semua Data Statistik
+      </h2>
 
 
-    <div className="glass-container" data-aos="zoom-in">
-      <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <div className="glass-container" data-aos="zoom-in">
+        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-      {!loading && (
-        <Row className="mb-3 text-center">
-          <Col xs={4}>
-            <small><FaDatabase /> {data.length} Total</small>
-          </Col>
-          <Col xs={4}>
-            <small><FaFilter /> {filteredData.length} Hasil</small>
-          </Col>
-          <Col xs={4}>
-            <small><FaListOl /> {currentPage}/{totalPages || 1}</small>
-          </Col>
-        </Row>
-      )}
-
-      {loading && (
-        <div className="text-center mt-4">
-          <Spinner animation="border" variant="light" size="sm" />
-        </div>
-      )}
-
-      {!loading && currentItems.length === 0 && (
-        <Alert variant="warning" className="text-center small">
-          Tidak ada data ditemukan untuk <strong>"{searchTerm}"</strong>.
-        </Alert>
-      )}
-
-      <Row xs={1} md={2} className="g-3">
-        {!loading &&
-          currentItems.map((item) => (
-            <Col key={item.id}>
-              <DataCard
-                id={item.id}
-                title={item.nama}
-                description={getShortText(item.deskripsi, 80)}
-              />
+        {!loading && (
+          <Row className="mb-3 text-center">
+            <Col xs={4}>
+              <small><FaDatabase /> {data.length} Total</small>
             </Col>
-          ))}
-      </Row>
+            <Col xs={4}>
+              <small><FaFilter /> {filteredData.length} Hasil</small>
+            </Col>
+            <Col xs={4}>
+              <small><FaListOl /> {currentPage}/{totalPages || 1}</small>
+            </Col>
+          </Row>
+        )}
 
-      {!loading && filteredData.length > itemsPerPage && (
-        <Row className="mt-3">
-          <Col className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-            <Button
-              size="sm"
-              className="pagination-btn"
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-            >
-              ←
-            </Button>
+        {loading && (
+          <div className="text-center mt-4">
+            <Spinner animation="border" variant="light" size="sm" />
+          </div>
+        )}
 
-            {getPageNumbers(totalPages, currentPage).map((page, idx) =>
-              page === '...' ? (
-                <span key={idx} className="px-2">...</span>
-              ) : (
-                <Button
-                  key={page}
-                  size="sm"
-                  className="pagination-btn"
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </Button>
-              )
-            )}
+        {!loading && currentItems.length === 0 && (
+          <Alert variant="warning" className="text-center small">
+            Tidak ada data ditemukan untuk <strong>"{searchTerm}"</strong>.
+          </Alert>
+        )}
 
-            <Button
-              size="sm"
-              className="pagination-btn"
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-            >
-              →
-            </Button>
-          </Col>
+        <Row xs={1} md={2} className="g-3">
+          {!loading &&
+            currentItems.map((item) => (
+              <Col key={item.id}>
+                <DataCard
+                  id={item.id}
+                  title={item.nama}
+                  description={getShortText(item.deskripsi, 80)}
+                />
+              </Col>
+            ))}
         </Row>
-      )}
-    </div>
-  </main>
-);
+
+        {!loading && filteredData.length > itemsPerPage && (
+          <Row className="mt-3">
+            <Col className="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+              <Button
+                size="sm"
+                className="pagination-btn"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                ←
+              </Button>
+
+              {getPageNumbers(totalPages, currentPage).map((page, idx) =>
+                page === '...' ? (
+                  <span key={idx} className="px-2">...</span>
+                ) : (
+                  <Button
+                    key={page}
+                    size="sm"
+                    className="pagination-btn"
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </Button>
+                )
+              )}
+
+              <Button
+                size="sm"
+                className="pagination-btn"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                →
+              </Button>
+            </Col>
+          </Row>
+        )}
+      </div>
+    </main>
+  );
 
 }
 

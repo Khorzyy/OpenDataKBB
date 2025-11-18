@@ -1,0 +1,23 @@
+{
+  "name": "backup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm i -D concurrently && npm i --prefix ./BackEnd && npm i --prefix ./my-app && concurrently \"npm run dev --prefix ./BackEnd\" \"npm start --prefix ./my-app\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Khorzyy/Khorzyy-OpenDataKBB_Private_.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Khorzyy/Khorzyy-OpenDataKBB_Private_/issues"
+  },
+  "homepage": "https://github.com/Khorzyy/Khorzyy-OpenDataKBB_Private_#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

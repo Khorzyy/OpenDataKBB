@@ -1,0 +1,31 @@
+.dataset-card {
+    border-radius: 12px;
+    transition: 0.2s ease-in-out;
+    background: #ffffff;
+    border: 1px solid #e3e3e3;
+}
+
+.dataset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.dataset-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.dataset-desc {
+    font-size: 0.85rem;
+}
+
+.dataset-year {
+    font-size: 0.85rem;
+    color: #3a7bd5;
+    font-weight: 500;
+}
+
+.pagination-container button {
+    min-width: 38px;
+}

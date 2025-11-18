@@ -1,213 +1,214 @@
+// src/pages/DetailPage.js
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { Container, Card, Button, Spinner, Badge } from 'react-bootstrap';
-import { FileEarmarkExcelFill } from 'react-bootstrap-icons';
-import Footer from '../components/Footer';
-import { getFileById } from '../api/api';
-import '../styles/Detail.css';
+import API from '../api/api';
+import {
+  Container,
+  Card,
+  Button,
+  Table,
+  Spinner,
+  Badge,
+  Alert
+} from 'react-bootstrap';
+import './TableDataView.css';
+import { Helmet } from 'react-helmet';
+import { FaArrowLeft, FaCalendar, FaTag, FaBook, FaDownload } from 'react-icons/fa';
 
-function Detail() {
+const DetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [detail, setDetail] = useState(null);
-  const [excelData, setExcelData] = useState([]);
-  const [loadingExcel, setLoadingExcel] = useState(false);
-  const [excelError, setExcelError] = useState(null);
+  const [tableData, setTableData] = useState([]);
+  const [tableInfo, setTableInfo] = useState({});
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
 
-  const rowsPerPage = 15;
-  const totalPages = Math.ceil(excelData.length / rowsPerPage);
-  const currentRows = excelData.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  // Ambil detail file
   useEffect(() => {
-    let isMounted = true;
     const fetchData = async () => {
-      const selected = await getFileById(id);
-      if (!selected) {
-        navigate('/NotFound');
-        return;
+      try {
+        const [dataRes, infoRes] = await Promise.all([
+          API.get(`/data/${id}`),
+          API.get(`/tables/${id}`),
+        ]);
+        setTableData(dataRes.data);
+        setTableInfo(infoRes.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Gagal memuat data:', error);
+        setLoading(false);
       }
-      if (isMounted) setDetail(selected);
     };
     fetchData();
-    return () => {
-      isMounted = false;
-    };
-  }, [id, navigate]);
+  }, [id]);
 
-  // Baca isi file Excel pakai Web Worker
   useEffect(() => {
-    const fetchFile = async () => {
-      if (!detail?.url) return;
+    document.title = tableInfo.name || 'Loading...';
+  }, [tableInfo]);
 
-      const format = detail.format?.toLowerCase() || '';
-      const urlLower = detail.url.toLowerCase();
-      const isExcel = urlLower.includes('.xlsx') || urlLower.includes('.xls') || format.includes('excel');
-      const isCSV = urlLower.includes('.csv') || format.includes('csv');
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/tables/${id}/download`
+      );
+      if (!response.ok) throw new Error('Gagal mengunduh file');
 
-      if (!isExcel && !isCSV) return;
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${tableInfo.name || 'tabel'}_${new Date()
+        .toISOString()
+        .slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengunduh file');
+    }
+  };
 
-      try {
-        setLoadingExcel(true);
-        setExcelError(null);
+  const handleBack = () => navigate('/dataset');
 
-        const response = await fetch(detail.url);
-        if (!response.ok) throw new Error(`Fetch gagal: ${response.status}`);
-        const buffer = await response.arrayBuffer();
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(tableData.length / itemsPerPage);
 
-        // Jalankan worker
-        const worker = new Worker(new URL('../workers/excelWorker.js', import.meta.url));
-        worker.postMessage({ buffer, type: isCSV ? 'csv' : 'excel' });
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-        worker.onmessage = (e) => {
-          const { success, data, error } = e.data;
-          if (success) {
-            setExcelData(data);
-          } else {
-            setExcelError(error);
-          }
-          setLoadingExcel(false);
-          worker.terminate();
-        };
-      } catch (error) {
-        setExcelError(error.message);
-        setLoadingExcel(false);
-      }
-    };
+  const getPageNumbers = () => {
+    const maxVisiblePages = 5;
+    const pageNumbers = [];
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+    } else {
+      const startPage = Math.max(2, currentPage - 1);
+      const endPage = Math.min(totalPages - 1, currentPage + 1);
 
-    fetchFile();
-  }, [detail]);
-
-  if (!detail) {
-    return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" variant="success" />
-      </div>
-    );
-  }
+      pageNumbers.push(1);
+      if (startPage > 2) pageNumbers.push('...');
+      for (let i = startPage; i <= endPage; i++) pageNumbers.push(i);
+      if (endPage < totalPages - 1) pageNumbers.push('...');
+      pageNumbers.push(totalPages);
+    }
+    return pageNumbers;
+  };
 
   return (
-    <>
-      <Container className="py-5 detail-page">
-        <div className="animated-bg"></div>
-        <div className="floating-shapes"></div>
+    <Container className="py-4">
+      <Helmet>
+        <title>{tableInfo.name}</title>
+      </Helmet>
 
-        {/* Tombol Kembali */}
-        <Button
-  variant="secondary"
-  className="mb-4 custom-btn-outline"
-  onClick={() => navigate('/')}
->
-  ← Kembali
-</Button>
+      <Button
+        variant="outline-secondary"
+        onClick={handleBack}
+        className="mb-3"
+      >
+        <FaArrowLeft className="me-1" /> Kembali
+      </Button>
 
-        <Card className="shadow border-0 glass-card text-white">
-          <Card.Body>
-            {/* Header Dokumen */}
-            <div className="d-flex align-items-center mb-3">
-              <FileEarmarkExcelFill size={28} className="text-success me-2" />
-              <h3 className="mb-0">{detail.nama}</h3>
+      <Card className="mb-4 shadow-sm border-start border-4 border-primary">
+        <Card.Body>
+          <h3 className="fw-bold text-primary mb-3">📊 {tableInfo.name}</h3>
+          <div className="d-flex flex-wrap gap-3 text-muted mb-3">
+            {tableInfo.tahun && (
+              <Badge bg="info">
+                <FaCalendar className="me-1" /> {tableInfo.tahun}
+              </Badge>
+            )}
+            {tableInfo.kategori && (
+              <Badge bg="success">
+                <FaTag className="me-1" /> {tableInfo.kategori}
+              </Badge>
+            )}
+            {tableInfo.sumber && (
+              <Badge bg="warning" text="dark">
+                <FaBook className="me-1" /> {tableInfo.sumber}
+              </Badge>
+            )}
+          </div>
+          <p style={{ whiteSpace: 'pre-line' }}>
+            {tableInfo.description || '-'}
+          </p>
+          <Button variant="primary" onClick={handleDownload}>
+            <FaDownload className="me-1" /> Download Excel
+          </Button>
+        </Card.Body>
+      </Card>
+
+      {loading ? (
+        <div className="text-center py-5">
+          <Spinner animation="border" variant="primary" />
+          <p>Memuat data...</p>
+        </div>
+      ) : tableData.length === 0 ? (
+        <Alert variant="warning">Tidak ada data.</Alert>
+      ) : (
+        <>
+          <div className="table-responsive shadow-sm rounded mb-4">
+            <Table striped bordered hover responsive>
+              <thead className="table-primary">
+                <tr>
+                  {Object.keys(tableData[0].data).map((key, i) => (
+                    <th key={i}>{key}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((item, i) => (
+                  <tr key={i}>
+                    {Object.values(item.data).map((val, j) => (
+                      <td key={j}>{val}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center">
+              <nav>
+                <ul className="pagination">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(1)}>«</button>
+                  </li>
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
+                  </li>
+
+                  {getPageNumbers().map((num, i) => (
+                    <li
+                      key={i}
+                      className={`page-item ${currentPage === num ? 'active' : ''} ${num === '...' ? 'disabled' : ''}`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => typeof num === 'number' && handlePageChange(num)}
+                      >
+                        {num}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
+                  </li>
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button className="page-link" onClick={() => handlePageChange(totalPages)}>»</button>
+                  </li>
+                </ul>
+              </nav>
             </div>
-            <p className="text-light">{detail.deskripsi}</p>
-
-            {/* Info File */}
-            <ul className="list-unstyled mb-4">
-              <li><strong>Kategori:</strong> <Badge bg="info">{detail.kategori}</Badge></li>
-              <li><strong>Tahun:</strong> {detail.tahun}</li>
-              <li><strong>Sumber:</strong> {detail.sumber}</li>
-              <li><strong>Format:</strong> {detail.format}</li>
-              <li><strong>Ukuran File:</strong> {detail.ukuran}</li>
-            </ul>
-
-            {/* Tombol Unduh */}
-            <a href={detail.url} target="_blank" rel="noopener noreferrer">
-              <Button variant="success">Unduh File</Button>
-            </a>
-
-            {/* Loading Spinner */}
-            {loadingExcel && (
-              <div className="text-center mt-4">
-                <Spinner animation="border" variant="light" />
-                <p className="mt-2 text-light">Membaca isi file...</p>
-              </div>
-            )}
-
-            {/* Tabel Data Excel */}
-            {!loadingExcel && excelData.length > 0 && (
-              <div className="mt-5">
-                <h5 className="mb-3">Isi File Excel:</h5>
-                <div className="table-responsive">
-                  <table className="table table-striped table-bordered">
-                    <thead className="table-light">
-                      <tr>
-                        {Object.keys(excelData[0]).map((key) => (
-                          <th key={key}>{key}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentRows.map((row, index) => (
-                        <tr key={index}>
-                          {Object.values(row).map((val, i) => (
-                            <td key={i}>{String(val)}</td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Navigasi Halaman */}
-                <div className="d-flex justify-content-between align-items-center mt-3">
-                  <Button
-                    variant="outline-light"
-                    className="custom-btn-outline"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => p - 1)}
-                  >
-                    ← Sebelumnya
-                  </Button>
-
-                  <span className="text-muted">
-                    Halaman {currentPage} dari {totalPages}
-                  </span>
-
-                  <Button
-                    variant="outline-light"
-                    className="custom-btn-outline"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => p + 1)}
-                  >
-                    Selanjutnya →
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Error */}
-            {excelError && (
-              <p className="mt-3 text-danger">
-                ⚠️ Gagal memuat file Excel: {excelError}
-              </p>
-            )}
-
-            {/* Kosong */}
-            {!loadingExcel && excelData.length === 0 && !excelError && (
-              <p className="mt-3 text-muted">
-                File Excel tidak berisi data yang bisa ditampilkan.
-              </p>
-            )}
-          </Card.Body>
-        </Card>
-      </Container>
-      <Footer />
-    </>
+          )}
+        </>
+      )}
+    </Container>
   );
-}
+};
 
-export default Detail;
+export default DetailPage;

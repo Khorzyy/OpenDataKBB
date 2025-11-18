@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 function CreateAccount() {
     const [email, setEmail] = useState('');
@@ -34,6 +35,9 @@ function CreateAccount() {
 
     return (
         <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+            <Helmet>
+                <title>Admin | Buat Akun</title>
+            </Helmet>
             <Card style={{ width: '400px', padding: '20px' }}>
                 <h3 className="text-center mb-4">Buat Akun Admin Baru</h3>
                 {successMsg && <Alert variant="success">{successMsg}</Alert>}

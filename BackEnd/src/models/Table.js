@@ -4,7 +4,7 @@ const tableSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, default: '' }, // tambahkan ini
     kategori: { type: String },
-    tahun: { type: Number },
+    tahun: { type: String },
     sumber: { type: String },
     format: { type: String },
     ukuran: { type: String },
