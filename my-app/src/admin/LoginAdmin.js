@@ -79,6 +79,7 @@ function LoginAdmin() {
                 type="submit"
                 disabled={loading}
                 className="w-100 rounded-pill fw-bold shadow-sm"
+                class="login-button"
               >
                 {loading ? 'Memproses...' : 'Masuk Admin'}
               </Button>

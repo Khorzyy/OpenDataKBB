@@ -180,7 +180,7 @@ const AddDataExcel = () => {
               value={form.description}
               onChange={handleInputChange}
               required
-              placeholder="Deskripsi singkat tentang data (opsional)"
+              placeholder="Deskripsi tentang data"
               style={{
                 minHeight: '300px',
                 resize: 'vertical'

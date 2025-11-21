@@ -15,7 +15,8 @@ function DataSet() {
     const [search, setSearch] = useState('');
     const [allData, setAllData] = useState([]);
 
-    const limit = 12; // jumlah card per halaman
+    const limit = 5; // jumlah card per halaman
+    const maxVisible = 2; // maksimal angka halaman yang terlihat
 
     useEffect(() => {
         fetchData();
@@ -55,6 +56,23 @@ function DataSet() {
         }
     };
 
+    // generate angka halaman dinamis
+    const getPageNumbers = () => {
+        let start = Math.max(1, page - 1);
+        let end = start + maxVisible - 1;
+
+        if (end > totalPages) {
+            end = totalPages;
+            start = Math.max(1, end - maxVisible + 1);
+        }
+
+        const pages = [];
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    };
+
     return (
         <Container className="py-4">
             <Helmet>
@@ -64,7 +82,6 @@ function DataSet() {
             <p className="text-center text-muted mb-4">
                 Kumpulan data lengkap yang tersedia pada platform Open Data.
             </p>
-
 
             {/* Search */}
             <Form className="mb-4">
@@ -76,10 +93,7 @@ function DataSet() {
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && setPage(1)}
                     />
-                    <Button
-                        variant="primary"
-                        onClick={() => setPage(1)} // reset page ke 1 saat klik search
-                    >
+                    <Button variant="primary" onClick={() => setPage(1)}>
                         <FaSearch />
                     </Button>
                 </InputGroup>
@@ -111,22 +125,60 @@ function DataSet() {
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="pagination-container d-flex justify-content-center align-items-center gap-2 mt-4">
-                    <Button variant="outline-primary" size="sm" onClick={() => goToPage(page - 1)} disabled={page === 1}>
+                    {/* ke halaman pertama */}
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => goToPage(1)}
+                        disabled={page === 1}
+                    >
                         &lt;&lt;
                     </Button>
 
-                    {[...Array(totalPages)].map((_, i) => (
+                    {/* mundur 1 halaman */}
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => goToPage(page - 1)}
+                        disabled={page === 1}
+                    >
+                        &lt;
+                    </Button>
+
+                    {/* angka halaman */}
+                    {getPageNumbers().map((num) => (
                         <Button
-                            key={i}
-                            variant={page === i + 1 ? 'primary' : 'outline-primary'}
+                            key={num}
+                            variant={page === num ? 'primary' : 'outline-primary'}
                             size="sm"
-                            onClick={() => goToPage(i + 1)}
+                            onClick={() => goToPage(num)}
                         >
-                            {i + 1}
+                            {num}
                         </Button>
                     ))}
 
-                    <Button variant="outline-primary" size="sm" onClick={() => goToPage(page + 1)} disabled={page === totalPages}>
+                    {/* ... jika ada halaman setelah angka terakhir */}
+                    {totalPages > maxVisible && getPageNumbers().slice(-1)[0] < totalPages && (
+                        <span className="px-2">...</span>
+                    )}
+
+                    {/* maju 1 halaman */}
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => goToPage(page + 1)}
+                        disabled={page === totalPages}
+                    >
+                        &gt;
+                    </Button>
+
+                    {/* ke halaman terakhir */}
+                    <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => goToPage(totalPages)}
+                        disabled={page === totalPages}
+                    >
                         &gt;&gt;
                     </Button>
                 </div>

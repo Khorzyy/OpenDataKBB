@@ -161,9 +161,6 @@ function Home() {
             </div>
           )}
 
-          {/* Divider */}
-          <hr className="section-divider my-5" />
-
           {/* (8) SECTION TENTANG PLATFORM */}
           <section className="mb-5" data-aos="fade-up">
             <h3 className="fw-bold text-center mb-3 text-primary">
